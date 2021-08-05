@@ -18,7 +18,7 @@
 
 package io.github.palexdev.raw4j.api;
 
-import io.github.palexdev.raw4j.data.AccountData;
+import io.github.palexdev.raw4j.data.User;
 import io.github.palexdev.raw4j.enums.ApiEndpoints;
 import io.github.palexdev.raw4j.json.GsonInstance;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
@@ -39,18 +39,18 @@ public class UserApi {
     //================================================================================
     // API Implementation
     //================================================================================
-    public AccountData getUser(String username) {
+    public User getUser(String username) {
         String url = ApiEndpoints.USER.toStringRaw().formatted(username);
-        AccountData accountData = GsonInstance.gson().fromJson(authManager.get(url), AccountData.class);
-        return userExists(accountData) ? accountData : null;
+        User user = GsonInstance.gson().fromJson(authManager.get(url), User.class);
+        return userExists(user) ? user : null;
     }
 
-    public boolean userExists(AccountData accountData) {
-        return accountData.getName() != null;
+    public boolean userExists(User user) {
+        return user.getName() != null;
     }
 
     public boolean userExists(String username) {
-        AccountData accountData = getUser(username);
-        return userExists(accountData);
+        User user = getUser(username);
+        return userExists(user);
     }
 }

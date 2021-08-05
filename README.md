@@ -30,5 +30,15 @@ This can happen if some error occurred during the OAuth Flow (the user denied th
 
 To make calls to Reddit APIs, for example to retrieve a user info...
 */
-AccountData accountData = client.api().userApi().getUser(USERNAME);
+User user = client.api().userApi().getUser(USERNAME);
+/*
+Or to retrieve the logged user info...
+ */
+User user = client.api().accountApi().getMe();
+
+/*
+Note that the logger user info are stored in memory, so if you need to refresh the data
+you must call...
+ */
+User user = client.api().userApi().refreshLoggedUser().getMe();
 ```

@@ -1,7 +1,7 @@
 package io.github.palexdev.raw4j;
 
 import io.github.palexdev.raw4j.api.RedditClient;
-import io.github.palexdev.raw4j.data.AccountData;
+import io.github.palexdev.raw4j.data.User;
 import io.github.palexdev.raw4j.enums.LoginType;
 import io.github.palexdev.raw4j.enums.Scopes;
 import io.github.palexdev.raw4j.oauth.OAuthParameters;
@@ -41,14 +41,14 @@ public class AccountApiTest {
 
     @Test
     public void testGetMe() {
-        AccountData getMe = redditClient.api().accountApi().getMe();
+        User getMe = redditClient.api().accountApi().getMe();
         assertNotNull(getMe);
         assertNotNull(getMe.getName());
     }
 
     @Test
     public void testAboutUser1() {
-        AccountData loggedUser = redditClient.api().accountApi().getLoggedUser();
+        User loggedUser = redditClient.api().accountApi().getLoggedUser();
         assertNotNull(loggedUser);
         assertTrue(loggedUser.getTotalKarma() > 0);
         assertFalse(loggedUser.isFriend());
@@ -56,7 +56,7 @@ public class AccountApiTest {
 
     @Test
     public void testAboutUser2() {
-        AccountData loggedUser = redditClient.api().userApi().getUser("xiongchiamiov");
+        User loggedUser = redditClient.api().userApi().getUser("xiongchiamiov");
         assertNotNull(loggedUser);
         assertTrue(loggedUser.getTotalKarma() > 0);
         assertFalse(loggedUser.isFriend());
@@ -64,7 +64,7 @@ public class AccountApiTest {
 
     @Test
     public void testAboutUser3() {
-        AccountData loggedUser = redditClient.api().userApi().getUser("ThreeSixty405");
+        User loggedUser = redditClient.api().userApi().getUser("ThreeSixty405");
         assertNull(loggedUser);
     }
 }

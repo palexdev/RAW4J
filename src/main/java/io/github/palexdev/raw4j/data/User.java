@@ -25,7 +25,7 @@ import io.github.palexdev.raw4j.json.JsonPathExpression;
 
 import java.io.Serializable;
 
-public class AccountData extends AbstractThing implements T2Data, Serializable {
+public class User extends AbstractThing implements T2Data, Serializable {
     //================================================================================
     // Properties
     //================================================================================

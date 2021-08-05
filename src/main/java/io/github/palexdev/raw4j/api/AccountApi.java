@@ -18,7 +18,7 @@
 
 package io.github.palexdev.raw4j.api;
 
-import io.github.palexdev.raw4j.data.AccountData;
+import io.github.palexdev.raw4j.data.User;
 import io.github.palexdev.raw4j.enums.ApiEndpoints;
 import io.github.palexdev.raw4j.json.GsonInstance;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
@@ -31,7 +31,7 @@ public class AccountApi {
     //================================================================================
     private static final Logger logger = LoggerFactory.getLogger(RedditApiWrapper.class.getSimpleName());
     private final OAuthFlow authManager;
-    private AccountData loggedUser;
+    private User loggedUser;
 
     //================================================================================
     // Constructors
@@ -43,29 +43,29 @@ public class AccountApi {
     //================================================================================
     // API Implementation
     //================================================================================
-    public AccountData getLoggedUser() {
+    public User getLoggedUser() {
         if (loggedUser != null) {
             return loggedUser;
         }
 
         if (!authManager.getAuthData().isValidUsername()) {
-            AccountData accountData = getMe();
-            authManager.getAuthData().setUsername(accountData.getName());
+            User user = getMe();
+            authManager.getAuthData().setUsername(user.getName());
         }
 
         String url = ApiEndpoints.USER.toStringRaw().formatted(authManager.getAuthData().getUsername());
-        loggedUser =  GsonInstance.gson().fromJson(authManager.get(url), AccountData.class);
+        loggedUser =  GsonInstance.gson().fromJson(authManager.get(url), User.class);
         return loggedUser;
     }
 
-    public AccountData getMe() {
+    public User getMe() {
         String url = ApiEndpoints.ME.toStringRaw();
-        return GsonInstance.gson().fromJson(authManager.get(url), AccountData.class);
+        return GsonInstance.gson().fromJson(authManager.get(url), User.class);
     }
 
     public AccountApi refreshLoggedUser() {
         String url = ApiEndpoints.USER.toStringRaw().formatted(authManager.getAuthData().getUsername());
-        loggedUser =  GsonInstance.gson().fromJson(authManager.get(url), AccountData.class);
+        loggedUser =  GsonInstance.gson().fromJson(authManager.get(url), User.class);
         return this;
     }
 }
