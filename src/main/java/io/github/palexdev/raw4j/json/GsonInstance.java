@@ -31,13 +31,20 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public class GsonInstance {
+    //================================================================================
+    // Properties
+    //================================================================================
     private final static Gson gson;
 
+    //================================================================================
+    // Initialization
+    //================================================================================
     static {
         gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .disableHtmlEscaping()
                 .serializeNulls()
+                .addSerializationExclusionStrategy(OAuthInfoExclusionStrategy.instance())
                 .registerTypeAdapterFactory(JsonPathTypeAdapterFactory.getJsonPathTypeAdapterFactory())
                 .create();
 
@@ -61,8 +68,14 @@ public class GsonInstance {
         });
     }
 
+    //================================================================================
+    // Constructors
+    //================================================================================
     private GsonInstance() {}
 
+    //================================================================================
+    // Getters
+    //================================================================================
     public static Gson gson() {
         return gson;
     }

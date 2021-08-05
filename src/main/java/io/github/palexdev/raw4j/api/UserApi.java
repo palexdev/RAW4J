@@ -21,15 +21,24 @@ package io.github.palexdev.raw4j.api;
 import io.github.palexdev.raw4j.data.AccountData;
 import io.github.palexdev.raw4j.enums.ApiEndpoints;
 import io.github.palexdev.raw4j.json.GsonInstance;
-import io.github.palexdev.raw4j.oauth.OAuthManager;
+import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 
 public class UserApi {
-    private final OAuthManager authManager;
+    //================================================================================
+    // Properties
+    //================================================================================
+    private final OAuthFlow authManager;
 
-    UserApi(OAuthManager authManager) {
+    //================================================================================
+    // Constructors
+    //================================================================================
+    UserApi(OAuthFlow authManager) {
         this.authManager = authManager;
     }
 
+    //================================================================================
+    // API Implementation
+    //================================================================================
     public AccountData getUser(String username) {
         String url = ApiEndpoints.USER.toStringRaw().formatted(username);
         AccountData accountData = GsonInstance.gson().fromJson(authManager.get(url), AccountData.class);

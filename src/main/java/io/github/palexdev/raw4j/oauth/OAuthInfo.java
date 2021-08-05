@@ -19,58 +19,58 @@
 package io.github.palexdev.raw4j.oauth;
 
 import com.google.gson.annotations.SerializedName;
+import io.github.palexdev.raw4j.enums.Scopes;
+import io.github.palexdev.raw4j.json.Exclude;
 
 import java.time.Instant;
+import java.util.List;
 
 public class OAuthInfo {
-
+    //================================================================================
+    // Properties
+    //================================================================================
     @SerializedName("access_token")
+    @Exclude
     private String accessToken;
 
     @SerializedName("toke_type")
+    @Exclude
     private String tokenType;
 
     @SerializedName("expires_in")
+    @Exclude
     private Integer expiresIn;
 
     @SerializedName("expire_time")
+    @Exclude
     private Long expireTime;
 
     @SerializedName("refresh_token")
     private String refreshToken;
 
-    @SerializedName("scope")
-    private transient String scope;
+    private transient boolean permanent;
+    private transient List<Scopes> scopes;
 
+    //================================================================================
+    // Getters, Setters
+    //================================================================================
     public String getAccessToken() {
         return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
     }
 
     public String getTokenType() {
         return tokenType;
     }
 
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
-    }
-
     public Integer getExpiresIn() {
         return expiresIn;
-    }
-
-    public void setExpiresIn(Integer expiresIn) {
-        this.expiresIn = expiresIn;
     }
 
     public Long getExpireTime() {
         return expireTime;
     }
 
-    public void setExpireTime(Long expireTime) {
+    void setExpireTime(Long expireTime) {
         this.expireTime = expireTime;
     }
 
@@ -78,19 +78,38 @@ public class OAuthInfo {
         return refreshToken;
     }
 
-    public void setRefreshToken(String refreshToken) {
+    void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
-    public String getScope() {
-        return scope;
+    public boolean isPermanent() {
+        return permanent;
     }
 
-    public void setScope(String scope) {
-        this.scope = scope;
+    void setPermanent(boolean permanent) {
+        this.permanent = permanent;
+    }
+
+    public List<Scopes> getScopes() {
+        return scopes;
+    }
+
+    void setScopes(List<Scopes> scopes) {
+        this.scopes = scopes;
     }
 
     public boolean isValid() {
-        return Instant.now().getEpochSecond() < expireTime;
+        return expiresIn != null && Instant.now().getEpochSecond() < expireTime;
+    }
+
+    void revoke(boolean isAccessToken) {
+        if (isAccessToken) {
+            accessToken = null;
+            tokenType = null;
+            expiresIn = null;
+            expireTime = null;
+        } else {
+            refreshToken = null;
+        }
     }
 }

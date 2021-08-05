@@ -16,21 +16,14 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.oauth;
+package io.github.palexdev.raw4j.json;
 
-import com.google.gson.JsonObject;
-import io.github.palexdev.raw4j.enums.Scopes;
-import okhttp3.RequestBody;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import java.io.IOException;
-import java.util.List;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-public interface OAuthManager {
-    void authenticate() throws IOException;
-    JsonObject get(String url);
-    JsonObject post(String url, RequestBody requestBody);
-    List<Scopes> getScopes();
-    void setScopes(List<Scopes> scopes);
-    OAuthInfo getAuthInfo();
-    OAuthData getAuthData();
-}
+@Retention(RUNTIME)
+@Target(FIELD)
+public @interface Exclude {}

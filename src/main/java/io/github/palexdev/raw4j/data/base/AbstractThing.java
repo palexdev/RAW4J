@@ -22,7 +22,9 @@ import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.json.JsonPathExpression;
 
 public abstract class AbstractThing implements Thing {
-
+    //================================================================================
+    // Properties
+    //================================================================================
     @JsonPathExpression("data.id")
     @SerializedName("id")
     private String id;

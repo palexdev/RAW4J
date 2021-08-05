@@ -18,7 +18,7 @@
 
 package io.github.palexdev.raw4j.exception;
 
-public class OAuthException extends RuntimeException {
+public class OAuthException extends Exception {
 
     public OAuthException() {
     }

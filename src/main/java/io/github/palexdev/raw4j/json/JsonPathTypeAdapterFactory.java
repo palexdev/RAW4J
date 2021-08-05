@@ -38,15 +38,27 @@ import java.util.stream.Collectors;
 import static com.jayway.jsonpath.JsonPath.compile;
 
 public final class JsonPathTypeAdapterFactory implements TypeAdapterFactory {
+    //================================================================================
+    // Properties
+    //================================================================================
     private static final TypeAdapterFactory jsonPathTypeAdapterFactory = new JsonPathTypeAdapterFactory();
 
+    //================================================================================
+    // Constructors
+    //================================================================================
     private JsonPathTypeAdapterFactory() {
     }
 
+    //================================================================================
+    // Getters
+    //================================================================================
     static TypeAdapterFactory getJsonPathTypeAdapterFactory() {
         return jsonPathTypeAdapterFactory;
     }
 
+    //================================================================================
+    // Override Methods
+    //================================================================================
     @Override
     public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> typeToken) {
         final TypeAdapter<T> delegateAdapter = gson.getDelegateAdapter(this, typeToken);
@@ -54,6 +66,9 @@ public final class JsonPathTypeAdapterFactory implements TypeAdapterFactory {
         return fieldInfos.isEmpty() ? delegateAdapter : new JsonPathTypeAdapter<>(gson, delegateAdapter, gson.getAdapter(JsonElement.class), fieldInfos);
     }
 
+    //================================================================================
+    // Nested Classes
+    //================================================================================
     private static final class JsonPathTypeAdapter<T> extends TypeAdapter<T> {
         private final Gson gson;
         private final TypeAdapter<T> delegateAdapter;

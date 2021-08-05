@@ -16,41 +16,45 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.oauth;
+package io.github.palexdev.raw4j.oauth.base;
 
 import com.google.gson.JsonObject;
-import io.github.palexdev.raw4j.enums.Scopes;
+import io.github.palexdev.raw4j.exception.OAuthException;
 import io.github.palexdev.raw4j.json.GsonInstance;
+import io.github.palexdev.raw4j.oauth.OAuthData;
+import io.github.palexdev.raw4j.oauth.OAuthInfo;
+import io.github.palexdev.raw4j.oauth.OAuthParameters;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
-public abstract class AbstractOAuthManager implements OAuthManager {
+public abstract class AbstractOAuthFlow implements OAuthFlow {
     //================================================================================
     // Properties
     //================================================================================
-    protected static final Logger logger = LoggerFactory.getLogger(OAuthManager.class.getSimpleName());
+    protected static final Logger logger = LoggerFactory.getLogger(OAuthFlow.class.getSimpleName());
     protected OkHttpClient getClient;
     protected OkHttpClient postClient;
 
     protected final OAuthData authData;
-    protected String userAgent;
-    protected List<Scopes> scopes;
     protected OAuthInfo authInfo;
+    protected OAuthParameters parameters;
+    private int expireSecondsOffset = 180;
 
     //================================================================================
     // Constructors
     //================================================================================
-    public AbstractOAuthManager() {
+    public AbstractOAuthFlow() {
         authData = new OAuthData();
 
         getClient = buildClient(null);
         postClient = buildClient((route, response) -> {
-            String credential = Credentials.basic(authData.getClientID(), "");
+            String username = authData.getClientID();
+            String password = authData.getClientSecret() == null ? "" : authData.getClientSecret();
+            String credential = Credentials.basic(username, password);
             return response.request().newBuilder().header("Authorization", credential).build();
         });
     }
@@ -58,8 +62,9 @@ public abstract class AbstractOAuthManager implements OAuthManager {
     //================================================================================
     // Abstract Methods
     //================================================================================
-    protected abstract void retrieveAccessToken() throws IOException;
-    protected abstract void refreshToken() throws IOException;
+    protected abstract void retrieveAccessToken() throws OAuthException;
+    protected abstract void refreshToken();
+    protected abstract void revokeToken(boolean isAccessToken);
 
     //================================================================================
     // Methods
@@ -68,7 +73,7 @@ public abstract class AbstractOAuthManager implements OAuthManager {
         Interceptor interceptor = chain -> chain.proceed(
                 chain.request()
                         .newBuilder()
-                        .addHeader("User-Agent", userAgent)
+                        .addHeader("User-Agent", parameters.getUserAgent())
                         .build()
         );
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
@@ -80,6 +85,9 @@ public abstract class AbstractOAuthManager implements OAuthManager {
         return builder.build();
     }
 
+    //================================================================================
+    // Override Methods
+    //================================================================================
     @Override
     public JsonObject get(String url) {
         JsonObject jsonObject = null;
@@ -89,7 +97,7 @@ public abstract class AbstractOAuthManager implements OAuthManager {
             }
 
             Request request = new Request.Builder()
-                    .header("User-Agent", userAgent)
+                    .header("User-Agent", parameters.getUserAgent())
                     .header("Authorization", "Bearer " + authInfo.getAccessToken())
                     .header("Accept-Language", Locale.US.getLanguage())
                     .url(url)
@@ -125,18 +133,12 @@ public abstract class AbstractOAuthManager implements OAuthManager {
     //================================================================================
     // Getters, Setters
     //================================================================================
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
+    protected int getExpireSecondsOffset() {
+        return expireSecondsOffset;
     }
 
-    @Override
-    public List<Scopes> getScopes() {
-        return scopes;
-    }
-
-    @Override
-    public void setScopes(List<Scopes> scopes) {
-        this.scopes = scopes;
+    protected void setExpireSecondsOffset(int expireSecondsOffset) {
+        this.expireSecondsOffset = Math.abs(expireSecondsOffset);
     }
 
     @Override
@@ -149,11 +151,27 @@ public abstract class AbstractOAuthManager implements OAuthManager {
         return authData;
     }
 
+    @Override
+    public OAuthParameters getParameters() {
+        return parameters;
+    }
+
+    protected void setParameters(OAuthParameters parameters) {
+        this.parameters = parameters;
+    }
+
     //================================================================================
-    // Nested Classes
+    // Builders
     //================================================================================
     protected abstract static class AbstractBuilder {
-        public abstract AbstractBuilder setScopes(List<Scopes> scopes);
-        public abstract AbstractOAuthManager build();
+        protected void setAuthDataFrom(OAuthParameters parameters) {
+            getOAuthManager().getAuthData().setClientID(parameters.getClientID());
+            getOAuthManager().getAuthData().setClientSecret(parameters.getClientSecret());
+            getOAuthManager().getAuthData().setUsername(parameters.getUsername());
+            getOAuthManager().getAuthData().setPassword(parameters.getPassword());
+        }
+
+        public abstract AbstractOAuthFlow from(OAuthParameters parameters);
+        protected abstract OAuthFlow getOAuthManager();
     }
 }

@@ -18,23 +18,22 @@
 
 package io.github.palexdev.raw4j.enums;
 
-public enum ApiEndpoints {
-    ME("/api/v1/me"),
-    USER("/user/%s/about");
+public enum URLEnum {
+    OAUTH_API_BASE_URL("https://oauth.reddit.com"),
+    OAUTH_APP_ONLY_URL("https://oauth.reddit.com/grants/installed_client"),
+    OAUTH_AUTH_URL("https://ssl.reddit.com/api/v1/authorize"),
+    OAUTH_TOKEN_URL("https://ssl.reddit.com/api/v1/access_token"),
+    REVOKE_TOKEN_URL("https://www.reddit.com/api/v1/revoke_token")
+    ;
 
+    private final String url;
 
-    private final String endpoint;
-
-    ApiEndpoints(String endpoint) {
-        this.endpoint = endpoint;
+    URLEnum(String url) {
+        this.url = url;
     }
 
     @Override
     public String toString() {
-        return URLEnum.OAUTH_API_BASE_URL + endpoint;
-    }
-
-    public String toStringRaw() {
-        return URLEnum.OAUTH_API_BASE_URL + endpoint + "?raw_json=1";
+        return url;
     }
 }

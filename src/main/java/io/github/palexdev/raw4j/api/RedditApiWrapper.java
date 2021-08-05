@@ -18,17 +18,26 @@
 
 package io.github.palexdev.raw4j.api;
 
-import io.github.palexdev.raw4j.oauth.OAuthManager;
+import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 
 public class RedditApiWrapper {
+    //================================================================================
+    // Properties
+    //================================================================================
     private final AccountApi accountApi;
     private final UserApi userApi;
 
-    RedditApiWrapper(OAuthManager authManager) {
+    //================================================================================
+    // Constructors
+    //================================================================================
+    RedditApiWrapper(OAuthFlow authManager) {
         accountApi = new AccountApi(authManager);
         userApi = new UserApi(authManager);
     }
 
+    //================================================================================
+    // Getters
+    //================================================================================
     public AccountApi accountApi() {
         return accountApi;
     }

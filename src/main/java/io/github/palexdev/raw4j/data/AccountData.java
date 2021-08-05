@@ -26,7 +26,9 @@ import io.github.palexdev.raw4j.json.JsonPathExpression;
 import java.io.Serializable;
 
 public class AccountData extends AbstractThing implements T2Data, Serializable {
-
+    //================================================================================
+    // Properties
+    //================================================================================
     @JsonPathExpression("data.awardee_karma")
     @SerializedName("awardee_karma")
     private int awardeeKarma;
@@ -79,10 +81,9 @@ public class AccountData extends AbstractThing implements T2Data, Serializable {
     @SerializedName("over_18")
     private boolean over18;
 
-    public AccountData() {
-        super();
-    }
-
+    //================================================================================
+    // Getters
+    //================================================================================
     @Override
     public int getAwardeeKarma() {
         return awardeeKarma;

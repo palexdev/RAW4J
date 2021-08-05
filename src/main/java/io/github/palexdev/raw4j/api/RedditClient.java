@@ -19,62 +19,80 @@
 package io.github.palexdev.raw4j.api;
 
 import io.github.palexdev.raw4j.enums.Scopes;
-import io.github.palexdev.raw4j.oauth.InstalledAppOAuth;
-import io.github.palexdev.raw4j.oauth.OAuthData;
-import io.github.palexdev.raw4j.oauth.OAuthInfo;
-import io.github.palexdev.raw4j.oauth.OAuthManager;
+import io.github.palexdev.raw4j.exception.OAuthException;
+import io.github.palexdev.raw4j.oauth.*;
+import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class RedditClient {
-    private final OAuthManager authManager;
+    //================================================================================
+    // Properties
+    //================================================================================
     private final RedditApiWrapper apiWrapper;
+    private final OAuthFlow authManager;
 
-    private RedditClient(OAuthManager authManager) {
+    //================================================================================
+    // Constructors
+    //================================================================================
+    public RedditClient(OAuthFlow authManager) {
         this.authManager = authManager;
         apiWrapper = new RedditApiWrapper(authManager);
     }
 
-    public static RedditClient loginInstalledApp(String userAgent, String username, String clientID, URL redirectURI, List<Scopes> scopes, String fileStore) {
-        RedditClient redditClient = new RedditClient(
-                new InstalledAppOAuth.Builder()
-                        .setUserAgent(userAgent)
-                        .setUsername(username)
-                        .setClientID(clientID)
-                        .setRedirectURI(redirectURI)
-                        .setScopes(scopes)
-                        .setFileStore(Paths.get(fileStore))
-                        .build()
-        );
-        return redditClient.login();
+    //================================================================================
+    // Methods
+    //================================================================================
+    public static RedditClient login(OAuthParameters parameters) {
+        OAuthFlow authManager;
+        RedditClient redditClient;
+
+        switch (parameters.getLoginType()) {
+            case USERLESS_INSTALLED, USERLESS_WEB -> {
+                authManager = new OAuthAppOnlyFlow.Builder().from(parameters);
+                redditClient = new RedditClient(authManager);
+                return redditClient.login();
+            }
+            case INSTALLED_APP, WEB_APP -> {
+                authManager = new OAuthAuthorizationCodeFlow.Builder().from(parameters);
+                redditClient = new RedditClient(authManager);
+                return redditClient.login();
+            }
+            case SCRIPT -> {
+                authManager = new OAuthScriptFlow.Builder().from(parameters);
+                redditClient = new RedditClient(authManager);
+                return redditClient.login();
+            }
+        }
+        return null;
     }
 
-    protected RedditClient login() {
+    public RedditClient login() {
         try {
             authManager.authenticate();
-        } catch (IOException ex) {
+        } catch (OAuthException ex) {
             ex.printStackTrace();
             return null;
         }
         return this;
     }
 
+    //================================================================================
+    // Getters
+    //================================================================================
     public RedditApiWrapper api() {
         return apiWrapper;
     }
 
-    public List<Scopes> getScopes() {
-        return authManager.getScopes();
+    public OAuthData getAuthData() {
+        return authManager.getAuthData();
     }
 
     public OAuthInfo getAuthInfo() {
         return authManager.getAuthInfo();
     }
 
-    public OAuthData getAuthData() {
-        return authManager.getAuthData();
+    public List<Scopes> getScopes() {
+        return getAuthInfo().getScopes();
     }
 }

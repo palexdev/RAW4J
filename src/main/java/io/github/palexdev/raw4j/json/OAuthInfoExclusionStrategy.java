@@ -16,55 +16,39 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.oauth;
+package io.github.palexdev.raw4j.json;
 
-import java.io.Serializable;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 
-public class OAuthData implements Serializable {
+public class OAuthInfoExclusionStrategy implements ExclusionStrategy {
     //================================================================================
     // Properties
     //================================================================================
-    private String username;
-    private String password;
-    private String clientID;
-    private String clientSecret;
+    private static final OAuthInfoExclusionStrategy strategy = new OAuthInfoExclusionStrategy();
 
     //================================================================================
-    // Getters, Setters
+    // Constructors
     //================================================================================
-    public String getUsername() {
-        return username;
+    private OAuthInfoExclusionStrategy() {}
+
+    //================================================================================
+    // Getters
+    //================================================================================
+    public static OAuthInfoExclusionStrategy instance() {
+        return strategy;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    //================================================================================
+    // Override Methods
+    //================================================================================
+    @Override
+    public boolean shouldSkipField(FieldAttributes field) {
+        return field.getAnnotation(Exclude.class) != null;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getClientID() {
-        return clientID;
-    }
-
-    public void setClientID(String clientID) {
-        this.clientID = clientID;
-    }
-
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
-    }
-
-    public boolean isValidUsername() {
-        return username != null && !username.isBlank();
+    @Override
+    public boolean shouldSkipClass(Class<?> clazz) {
+        return false;
     }
 }

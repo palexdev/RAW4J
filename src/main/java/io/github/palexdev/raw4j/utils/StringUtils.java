@@ -22,8 +22,14 @@ import java.util.Random;
 
 public class StringUtils {
 
+    //================================================================================
+    // Constructors
+    //================================================================================
     private StringUtils() {}
 
+    //================================================================================
+    // Public API
+    //================================================================================
     public static String randomString(int length) {
         Random random = new Random();
         return random.ints(48, 122 + 1)
@@ -48,4 +54,9 @@ public class StringUtils {
         return string.substring(0, index) + replacement
                 + string.substring(index + substring.length());
     }
+
+    public static String checkString(String s, String returnS) {
+        return (s == null || s.isBlank()) ? returnS : "";
+    }
+
 }

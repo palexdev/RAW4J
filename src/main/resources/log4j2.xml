@@ -6,7 +6,9 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="error">
+        <Logger name="com.jayway.jsonpath.internal.path.CompiledPath" additivity="false"/>
+
+        <Root level="trace">
             <AppenderRef ref="stdout"/>
         </Root>
     </Loggers>

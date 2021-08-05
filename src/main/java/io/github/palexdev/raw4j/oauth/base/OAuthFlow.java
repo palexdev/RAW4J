@@ -16,22 +16,20 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.enums;
+package io.github.palexdev.raw4j.oauth.base;
 
-public enum Urls {
-    OAUTH_API_BASE_URL("https://oauth.reddit.com"),
-    OAUTH_AUTH_URL("https://ssl.reddit.com/api/v1/authorize"),
-    OAUTH_TOKEN_URL("https://ssl.reddit.com/api/v1/access_token"),
-    ;
+import com.google.gson.JsonObject;
+import io.github.palexdev.raw4j.exception.OAuthException;
+import io.github.palexdev.raw4j.oauth.OAuthData;
+import io.github.palexdev.raw4j.oauth.OAuthInfo;
+import io.github.palexdev.raw4j.oauth.OAuthParameters;
+import okhttp3.RequestBody;
 
-    private final String url;
-
-    Urls(String url) {
-        this.url = url;
-    }
-
-    @Override
-    public String toString() {
-        return url;
-    }
+public interface OAuthFlow {
+    void authenticate() throws OAuthException;
+    JsonObject get(String url);
+    JsonObject post(String url, RequestBody requestBody);
+    OAuthInfo getAuthInfo();
+    OAuthData getAuthData();
+    OAuthParameters getParameters();
 }
