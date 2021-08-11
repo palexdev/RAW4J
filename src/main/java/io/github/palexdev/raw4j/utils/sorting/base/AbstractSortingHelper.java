@@ -23,6 +23,17 @@ import io.github.palexdev.raw4j.enums.Sorting;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Base class for all sorting helpers.
+ * <p></p>
+ * This class as the instance of a {@link Comparator} because it allows chaining multiple
+ * comparators by using {@link #sortBy(Comparator)} first and then {@link #andThen(Comparator)}.
+ * <p></p>
+ * To specify if the sort is ASCENDING or DESCENDING use {@link #mode(Sorting)}.
+ *
+ * @param <T> since helpers use fluent API, this parameter is needed to return the correct object after calling {@link #sort()}
+ * @param <C> the type of objects that may be compared by the comparators
+ */
 public abstract class AbstractSortingHelper<T, C> {
     //================================================================================
     // Properties
@@ -38,15 +49,26 @@ public abstract class AbstractSortingHelper<T, C> {
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * Replaces the comparator with the given one
+     */
     public AbstractSortingHelper<T, C> sortBy(Comparator<C> comparator) {
         this.comparator = comparator;
         return this;
     }
 
+    /**
+     * Chains the comparator with the given one by calling {@link Comparator#thenComparing(Comparator)}
+     */
     public AbstractSortingHelper<T, C> andThen(Comparator<C> comparator) {
         this.comparator = this.comparator.thenComparing(comparator);
         return this;
     }
+
+    /**
+     * Sets the sorting mode on ASCENDING or DESCENDING.
+     */
     public AbstractSortingHelper<T, C> mode(Sorting sorting) {
         if (sorting == Sorting.DESCENDING) {
             comparator = comparator.reversed();

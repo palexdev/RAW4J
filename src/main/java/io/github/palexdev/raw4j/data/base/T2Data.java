@@ -20,7 +20,11 @@ package io.github.palexdev.raw4j.data.base;
 
 import io.github.palexdev.raw4j.api.AccountApi;
 import io.github.palexdev.raw4j.api.UserApi;
+import io.github.palexdev.raw4j.enums.ThingType;
 
+/**
+ * Public API for all data structures of type {@link ThingType#T2}
+ */
 public interface T2Data {
 
     /**

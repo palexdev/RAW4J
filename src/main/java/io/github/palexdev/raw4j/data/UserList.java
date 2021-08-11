@@ -20,14 +20,21 @@ package io.github.palexdev.raw4j.data;
 
 import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.data.base.AbstractListing;
+import io.github.palexdev.raw4j.data.base.Listing;
 import io.github.palexdev.raw4j.enums.UserListType;
 import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
 import io.github.palexdev.raw4j.utils.sorting.UserListSortHelper;
+import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 import io.github.palexdev.raw4j.utils.sorting.base.Sortable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This data structure represents a {@link Listing} of type {@link UserListType}.
+ * <p></p>
+ * This class offers info about friends, blocked and trusted users.
+ */
 public class UserList extends AbstractListing implements Sortable {
     //================================================================================
     // Properties
@@ -42,11 +49,19 @@ public class UserList extends AbstractListing implements Sortable {
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * @return the instance of the {@link AbstractSortingHelper} to sort the list users
+     */
     @Override
     public UserListSortHelper sorting() {
         return helper;
     }
 
+    /**
+     * @return the list of users
+     * @see ListingUser
+     */
     public List<ListingUser> users() {
         return listingUsers;
     }
@@ -54,10 +69,20 @@ public class UserList extends AbstractListing implements Sortable {
     //================================================================================
     // Getters, Setters
     //================================================================================
+
+    /**
+     * @return the type of this UserList
+     */
     public UserListType getUserListType() {
         return userListType;
     }
 
+    /**
+     * Sets this UserList type. Since this property is not coming from Reddit but rather
+     * on the RAW4J side to avoid code duplication after that the UserList has been retrieved
+     * from the server it's needed to set its type. This is done automatically by RAW4J, any
+     * subsequent call of this method won't have any effect.
+     */
     public void setUserListType(UserListType type) {
         if (userListType != null) {
             return;
@@ -68,6 +93,13 @@ public class UserList extends AbstractListing implements Sortable {
     //================================================================================
     // Nested Classes
     //================================================================================
+
+    /**
+     * This represents the data structure in the 'children' array of the JSON returned by the Reddit API.
+     * <p></p>
+     * This structure has info about: the user's name and id, the time it was added to the UserList (in other words
+     * when you became friends, or when you blocked him).
+     */
     public static class ListingUser {
         //================================================================================
         // Properties

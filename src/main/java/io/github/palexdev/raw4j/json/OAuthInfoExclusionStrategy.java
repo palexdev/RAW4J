@@ -21,7 +21,11 @@ package io.github.palexdev.raw4j.json;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import io.github.palexdev.raw4j.json.annotations.Exclude;
+import io.github.palexdev.raw4j.oauth.OAuthInfo;
 
+/**
+ * Custom exclusion strategy for Gson and {@link OAuthInfo}. Fields annotated with {@link Exclude} won't be serialized.
+ */
 public class OAuthInfoExclusionStrategy implements ExclusionStrategy {
     //================================================================================
     // Properties

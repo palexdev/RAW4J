@@ -37,6 +37,9 @@ import io.github.palexdev.raw4j.json.adapters.UserListSerializer;
 import java.util.EnumSet;
 import java.util.Set;
 
+/**
+ * Class to obtain a global instance of Gson
+ */
 public class GsonInstance {
     //================================================================================
     // Properties

@@ -18,6 +18,7 @@
 
 package io.github.palexdev.raw4j.cache;
 
+import io.github.palexdev.raw4j.api.listing.UserListRequestBuilder;
 import io.github.palexdev.raw4j.cache.base.IListingCache;
 import io.github.palexdev.raw4j.data.base.Listing;
 import io.github.palexdev.raw4j.utils.ExecutorUtils;
@@ -27,6 +28,17 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This is an implementation of {@link IListingCache}
+ * <p></p>
+ * Other than implementing the {@link IListingCache} interface, this class adds a new feature which is
+ * the possibility of specifying an action to perform in case the cache can't find the next/previous item.
+ * <p>
+ * Note that the action is not called by the {@code ListingCache} itself but should be called by the classes that use it
+ * (see {@link UserListRequestBuilder} for example).
+ *
+ * @param <T> the type of Listing
+ */
 public class ListingCache<T extends Listing> implements IListingCache<T> {
     //================================================================================
     // Properties
@@ -92,6 +104,13 @@ public class ListingCache<T extends Listing> implements IListingCache<T> {
         return cachedItems;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p></p>
+     * If the auto-purge is enabled (and was not already enabled) then schedules a task to {@link ExecutorUtils#scheduled()}.
+     * <p>
+     * If it is disabled then the task is cancelled.
+     */
     @Override
     public void shouldAutoPurge(boolean purge) {
         if (purge && !shouldAutoPurge) {
@@ -102,6 +121,13 @@ public class ListingCache<T extends Listing> implements IListingCache<T> {
         this.shouldAutoPurge = purge;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p></p>
+     * Temporarily disables the auto-purge feature, then update the purgePollTime and then re-enables it.
+     * <p></p>
+     * The default value is 120s
+     */
     @Override
     public void setAutomaticPurgeTime(long time) {
         shouldAutoPurge(false);
@@ -112,18 +138,33 @@ public class ListingCache<T extends Listing> implements IListingCache<T> {
     //================================================================================
     // Getters, Setters
     //================================================================================
+
+    /**
+     * Checks whether the fallback action should be used or not.
+     */
     public boolean isFallbackOnMissEnabled() {
         return fallbackOnMissEnabled;
     }
 
+    /**
+     * Enables/Disables the fallback action.
+     * <p></p>
+     * By default it's false.
+     */
     public void enableFallbackOnMiss(boolean fallbackOnMissEnabled) {
         this.fallbackOnMissEnabled = fallbackOnMissEnabled;
     }
 
+    /**
+     * @return the fallback action
+     */
     public Callable<T> getFallbackAction() {
         return fallbackAction;
     }
 
+    /**
+     * Sets the fallback action to the given one.
+     */
     public void setFallbackAction(Callable<T> fallbackAction) {
         this.fallbackAction = fallbackAction;
     }

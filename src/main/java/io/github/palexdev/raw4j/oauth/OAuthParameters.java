@@ -27,6 +27,23 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
+/**
+ * This class contains all the needed parameters to correctly authenticate an app such as:
+ * <p> - the {@link LoginType}
+ * <p> - the app's User-Agent
+ * <p> - the client ID
+ * <p> - the client secret (only for Web Apps and Scripts)
+ * <p> - the redirect URI (only for {@link OAuthAuthorizationCodeFlow})
+ * <p> - the username (only for Scripts)
+ * <p> - the password (only for Scripts)
+ * <p> - whether to request a permanent token or not (permanent means that the JSON will also contain a refresh token)
+ * <p> - the scopes
+ * <p> - the action to perform to load an existing {@link OAuthInfo} (not for Scripts)
+ * <p> - the action to perform to store an {@link OAuthInfo} (not for Scripts)
+ * <p></p>
+ * To obtain an instance of this class you must use the correct Builder according to your App:
+ * {@link AppOnlyFlowBuilder}, {@link AuthCodeFlowBuilder}, {@link ScriptFlowBuilder}.
+ */
 public class OAuthParameters {
     //================================================================================
     // Properties
@@ -46,8 +63,7 @@ public class OAuthParameters {
     //================================================================================
     // Constructors
     //================================================================================
-    private OAuthParameters() {
-    }
+    private OAuthParameters() {}
 
     //================================================================================
     // Getters
@@ -99,6 +115,10 @@ public class OAuthParameters {
     //================================================================================
     // Builders
     //================================================================================
+
+    /**
+     * Builds instances of {@link OAuthParameters} for this OAuth flow: {@link OAuthAppOnlyFlow}.
+     */
     public static class AppOnlyFlowBuilder {
         private final OAuthParameters parameters;
 
@@ -141,6 +161,11 @@ public class OAuthParameters {
             return this;
         }
 
+        /**
+         * Returns an instance of {@link OAuthParameters} with the set parameters.
+         * <p></p>
+         * Will throw an exception if the wrong {@link LoginType} is passed or if {@link ClientUtils#checkParameters(LoginType, OAuthParameters)} fails.
+         */
         public OAuthParameters build(LoginType loginType) {
             if (loginType != LoginType.USERLESS_WEB && loginType != LoginType.USERLESS_INSTALLED) {
                 throw new IllegalArgumentException("Invalid login type, can only be: [" + LoginType.USERLESS_WEB + ", " + LoginType.USERLESS_INSTALLED + "]");
@@ -151,6 +176,9 @@ public class OAuthParameters {
         }
     }
 
+    /**
+     * Builds instances of {@link OAuthParameters} for this OAuth flow: {@link OAuthAuthorizationCodeFlow}.
+     */
     public static class AuthCodeFlowBuilder {
 
         private final OAuthParameters parameters;
@@ -199,6 +227,11 @@ public class OAuthParameters {
             return this;
         }
 
+        /**
+         * Returns an instance of {@link OAuthParameters} with the set parameters.
+         * <p></p>
+         * Will throw an exception if the wrong {@link LoginType} is passed or if {@link ClientUtils#checkParameters(LoginType, OAuthParameters)} fails.
+         */
         public OAuthParameters build(LoginType loginType) {
             if (loginType != LoginType.INSTALLED_APP && loginType != LoginType.WEB_APP) {
                 throw new IllegalArgumentException("Invalid login type, can only be: [" + LoginType.INSTALLED_APP + ", " + LoginType.WEB_APP + "]");
@@ -210,6 +243,9 @@ public class OAuthParameters {
 
     }
 
+    /**
+     * Builds instances of {@link OAuthParameters} for this OAuth flow: {@link OAuthScriptFlow}.
+     */
     public static class ScriptFlowBuilder {
 
         private final OAuthParameters parameters;
@@ -244,6 +280,11 @@ public class OAuthParameters {
             return this;
         }
 
+        /**
+         * Returns an instance of {@link OAuthParameters} with the set parameters.
+         * <p></p>
+         * Will throw an exception if {@link ClientUtils#checkParameters(LoginType, OAuthParameters)} fails.
+         */
         public OAuthParameters build() {
             ClientUtils.checkParameters(LoginType.SCRIPT, parameters);
             return parameters;

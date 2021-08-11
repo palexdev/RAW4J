@@ -18,11 +18,34 @@
 
 package io.github.palexdev.raw4j.enums;
 
+/**
+ * Enumeration for all the Reddit OAuth URLs.
+ */
 public enum URLEnum {
+
+    /**
+     * The base URL for all API endpoints.
+     */
     OAUTH_API_BASE_URL("https://oauth.reddit.com"),
+
+    /**
+     * URL used by Apps without a logged-in user.
+     */
     OAUTH_APP_ONLY_URL("https://oauth.reddit.com/grants/installed_client"),
+
+    /**
+     * URL used by Web Apps and Installed Apps with a logged-in user.
+     */
     OAUTH_AUTH_URL("https://ssl.reddit.com/api/v1/authorize"),
+
+    /**
+     * URL used to retrieve access tokens.
+     */
     OAUTH_TOKEN_URL("https://ssl.reddit.com/api/v1/access_token"),
+
+    /**
+     * URL used to revoke access and refresh tokens.
+     */
     REVOKE_TOKEN_URL("https://www.reddit.com/api/v1/revoke_token")
     ;
 
@@ -32,6 +55,9 @@ public enum URLEnum {
         this.url = url;
     }
 
+    /**
+     * Overridden to return the URL String.
+     */
     @Override
     public String toString() {
         return url;

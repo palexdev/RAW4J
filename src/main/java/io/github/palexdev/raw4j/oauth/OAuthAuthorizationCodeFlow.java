@@ -43,6 +43,19 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
+/**
+ * OAuthFlow for Web Apps and Installed Apps that have a logged-in user.
+ * <p></p>
+ * Extends {@link AbstractOAuthFlow} implementing all the abstract methods to: retrieve, refresh and revoke tokens.
+ * <p></p>
+ * This OAuth flow needs the user to first authorize the app in the browser, then the app retrieves a code that can be exchanged to get an access token.
+ * <p>
+ * For this reason this flow uses a {@link CountDownLatch} and an {@link HttpServer}, see {@link #authenticate()}
+ * <p></p>
+ * <b>Note</b> on the {@link #storeAuthInfo()} behavior: if you use the library provided Gson instance to serialize the {@link OAuthInfo} object
+ * keep in mind that the resulting JSON will only contain the refresh token as it's not a good idea to save the access token. Of course, you can change
+ * this behavior by using another Gson instance, but it is not recommended.
+ */
 public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
     //================================================================================
     // Properties
@@ -61,6 +74,23 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
     //================================================================================
     // Override Methods
     //================================================================================
+
+    /**
+     * {@inheritDoc}
+     * <p></p>
+     *
+     * Tries to load the OAuthInfo by calling {@link #loadAuthInfo()} if it succeeds and the parsed
+     * refresh token is not null gets a new access token by using the refresh token and stores the {@link OAuthInfo}
+     * object again by calling {@link #storeAuthInfo()}.
+     * <p></p>
+     * If loading the token fails for whatever reason, these sequence of methods is called:
+     * <p> - {@link #startServer()}
+     * <p> - {@link #authorizeApp()}
+     * <p> - {@link #checkAccessGranted(String)}
+     * <p> - {@link #retrieveCode(String)}
+     * <p> - {@link #retrieveAccessToken()}
+     * <p> - {@link #storeAuthInfo()}
+     */
     @Override
     public void authenticate() throws OAuthException {
         try {
@@ -83,6 +113,13 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
         }
     }
 
+    /**
+     * Retrieves the access token by sending a request to {@link URLEnum#OAUTH_TOKEN_URL}.
+     * <p>
+     * The request body contains the grant type, the code retrieved by authorizing the app and the redirect uri.
+     *
+     * @throws OAuthException if the returned {@link OAuthInfo} is not valid
+     */
     @Override
     protected void retrieveAccessToken() throws OAuthException {
         logger.debug("Retrieving token...");
@@ -103,6 +140,16 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
         logger.debug("Token retrieved");
     }
 
+    /**
+     * Tries to get a new access token by using the refresh token of {@link OAuthInfo}.
+     * <p></p>
+     * <b>NOTE</b> that if the access was not permanent the refresh token won't be available, the current access token is revoked
+     * and the {@link OAuthInfo} will be left invalid. At this point you will have to authorize the app again by calling {@link #authenticate()}.
+     * <p></p>
+     * The request is sent to {@link URLEnum#OAUTH_TOKEN_URL}.
+     * <p>
+     * The request body contains the grant type and the refresh token.
+     */
     @Override
     protected void refreshToken() {
         logger.debug("Refreshing token...");
@@ -127,6 +174,9 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
         logger.debug("Token refreshed");
     }
 
+    /**
+     * Revokes the access token or the refresh token, depending on the passed boolean.
+     */
     @Override
     protected void revokeToken(boolean isAccessToken) {
         logger.debug("Revoking token...");
@@ -148,6 +198,10 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * Starts the {@link HttpServer} with the parameters specified by {@link OAuthParameters#getRedirectURI()}.
+     */
     private void startServer() throws IOException {
         if (httpServer != null) {
             httpServer.stop(0);
@@ -160,6 +214,12 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
         logger.debug("Authorization Server started");
     }
 
+    /**
+     * Builds the URL needed for the authorization, then opens the browser using {@link Desktop#browse(URI)}.
+     * <p>
+     * At this point {@link CountDownLatch#await()} is called, so the current thread is paused until the user interacts
+     * with the authorization page by either authorizing the app or denying the access.
+     */
     private void authorizeApp() throws IOException {
         randomState = StringUtils.randomString(10);
 
@@ -188,6 +248,11 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
         }
     }
 
+    /**
+     * Responsible for storing the {@link OAuthInfo} object.
+     * <p></p>
+     * The action to perform can be specified by the user in the {@link OAuthParameters} object.
+     */
     protected void storeAuthInfo() {
         Consumer<OAuthInfo> storeAction = parameters.getStoreAction();
         if (storeAction == null) {
@@ -197,6 +262,11 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
         logger.debug("Auth Info stored");
     }
 
+    /**
+     * Responsible for loading an existing {@link OAuthInfo} object.
+     * <p></p>
+     * The action to perform can be specified by the user in the {@link OAuthParameters} object.
+     */
     protected OAuthInfo loadAuthInfo() {
         Callable<OAuthInfo> loadAction = parameters.getLoadAction();
         if (loadAction == null) {
@@ -213,12 +283,20 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
         return authInfo;
     }
 
+    /**
+     * Checks if the user has authorized the app or not.
+     *
+     * @throws OAuthException if the query contains an error or the state string is not the same
+     */
     private void checkAccessGranted(String query) throws OAuthException {
         if (query.contains("error") || !query.contains(randomState)) {
             throw new OAuthException("Authorization error, query was: " + "\"" + query + "\"" + ", and sent state was: " + "\"" + randomState + "\"");
         }
     }
 
+    /**
+     * Retrieves the authorization code from the query
+     */
     private String retrieveCode(String query) {
         return query.substring(query.indexOf("code=")).replace("code=", "");
     }
@@ -226,6 +304,13 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
     //================================================================================
     // Nested Classes
     //================================================================================
+
+    /**
+     * This is the {@link HttpHandler} used by this OAuth flow's server.
+     * <p></p>
+     * This is responsible for stopping the server and calling {@link CountDownLatch#countDown()}
+     * when the user has interacted with the authorization page.
+     */
     private class OAuthHttpHandler implements HttpHandler {
         private final HttpServer httpServer;
 
@@ -260,6 +345,10 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
     //================================================================================
     // Builders
     //================================================================================
+
+    /**
+     * Builder for all OAuthAuthorizationCodeFlows, extends {@link AbstractBuilder}.
+     */
     public static class Builder extends AbstractBuilder {
         private final OAuthAuthorizationCodeFlow authManager;
 
@@ -272,6 +361,9 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
             return authManager;
         }
 
+        /**
+         * Initializes the OAuth flow instance of this Builder with the given parameters.
+         */
         @Override
         public AbstractOAuthFlow from(OAuthParameters parameters) {
             setAuthDataFrom(parameters);

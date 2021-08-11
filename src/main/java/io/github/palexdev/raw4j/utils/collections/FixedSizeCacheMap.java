@@ -21,6 +21,9 @@ package io.github.palexdev.raw4j.utils.collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Implementation of a {@link LinkedHashMap} with a maximum capacity
+ */
 public class FixedSizeCacheMap<K, V> extends LinkedHashMap<K, V> {
     //================================================================================
     // Properties
@@ -38,6 +41,10 @@ public class FixedSizeCacheMap<K, V> extends LinkedHashMap<K, V> {
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * Sets the maximum capacity of the map.
+     */
     public void setMaxSize(int maxSize) {
         this.maxSize = maxSize;
     }
@@ -45,6 +52,10 @@ public class FixedSizeCacheMap<K, V> extends LinkedHashMap<K, V> {
     //================================================================================
     // Override Methods
     //================================================================================
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
         return size() > maxSize;

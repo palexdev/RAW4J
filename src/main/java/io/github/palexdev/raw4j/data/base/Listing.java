@@ -20,8 +20,23 @@ package io.github.palexdev.raw4j.data.base;
 
 import io.github.palexdev.raw4j.enums.ThingType;
 
+/**
+ * Public API for all {@code Listings}
+ */
 public interface Listing {
+
+    /**
+     * @return the type of the listing
+     */
     ThingType getType();
+
+    /**
+     * @return the after String of the listing
+     */
     String getAfter();
+
+    /**
+     * @return the before String of the listing
+     */
     String getBefore();
 }

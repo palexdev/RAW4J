@@ -20,6 +20,9 @@ package io.github.palexdev.raw4j.data.base;
 
 import io.github.palexdev.raw4j.enums.ThingType;
 
+/**
+ * Public API for all {@code Things}
+ */
 public interface Thing {
 
     /**

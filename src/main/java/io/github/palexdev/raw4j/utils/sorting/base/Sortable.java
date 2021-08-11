@@ -18,6 +18,13 @@
 
 package io.github.palexdev.raw4j.utils.sorting.base;
 
+/**
+ * Interface all data structures with sorting capabilities should implement.
+ */
 public interface Sortable {
+
+    /**
+     * @return the instance of the {@link AbstractSortingHelper} used for sorting
+     */
     AbstractSortingHelper<?, ?> sorting();
 }

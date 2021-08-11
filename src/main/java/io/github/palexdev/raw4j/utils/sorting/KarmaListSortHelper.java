@@ -25,6 +25,9 @@ import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Sort helper for {@link KarmaList}s, extends {@link AbstractSortingHelper}.
+ */
 public class KarmaListSortHelper extends AbstractSortingHelper<KarmaList, KarmaListSubreddit> {
     //================================================================================
     // Properties
@@ -41,11 +44,22 @@ public class KarmaListSortHelper extends AbstractSortingHelper<KarmaList, KarmaL
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * Sets the comparator to one that sorts by {@link KarmaListSubreddit#getName()}
+     * <p>
+     * To confirm the sort call {@link #sort()}
+     */
     public KarmaListSortHelper sortByName() {
         sortBy(Comparator.comparing(KarmaListSubreddit::getName));
         return this;
     }
 
+    /**
+     * Sets the comparator to one that sorts by the sum of {@link KarmaListSubreddit#getLinkKarma()} and {@link KarmaListSubreddit#getCommentKarma()}.
+     * <p>
+     * To confirm the sort call {@link #sort()}
+     */
     public KarmaListSortHelper sortByTotalKarma() {
         sortBy(Comparator.comparing(s -> s.getLinkKarma() + s.getCommentKarma()));
         return this;
@@ -54,6 +68,10 @@ public class KarmaListSortHelper extends AbstractSortingHelper<KarmaList, KarmaL
     //================================================================================
     // Override Methods
     //================================================================================
+
+    /**
+     * Sorts the list with the built comparator.
+     */
     @Override
     public KarmaList sort() {
         if (getList() == null) {
@@ -64,6 +82,9 @@ public class KarmaListSortHelper extends AbstractSortingHelper<KarmaList, KarmaL
         return karmaList;
     }
 
+    /**
+     * @return the list of {@link KarmaListSubreddit}s
+     */
     @Override
     public List<KarmaListSubreddit> getList() {
         return karmaList.subreddits();

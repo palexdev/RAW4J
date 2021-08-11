@@ -22,6 +22,16 @@ import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.enums.ThingType;
 import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
 
+/**
+ * This is the base class for every {@code Listing}.
+ * <p></p>
+ * Common properties of {@code Listings} are:
+ * <p> - type (JSON: kind)
+ * <p> - after: specifies the which will be the next listing
+ * <p> - before: specifies which was the previous listing
+ * <p></p>
+ * Implements {@link Listing}
+ */
 public abstract class AbstractListing implements Listing {
     //================================================================================
     // Properties

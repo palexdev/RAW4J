@@ -24,6 +24,14 @@ import io.github.palexdev.raw4j.data.base.Listing;
 import io.github.palexdev.raw4j.enums.UserListType;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 
+/**
+ * Helper class to easily manage Listings. This base class provides common properties for all listings such as:
+ * <p> - count: the total number of items fetched
+ * <p> - limit: the max number of items to fetch (by default it is 25, maximum value is 100)
+ * <p> - A cache to store up to n fetched listings, so that navigation can be smoother
+ * <p></p>
+ * @param <T> the type of {@link Listing}
+ */
 public abstract class ListingRequestBuilder<T extends Listing> {
     //================================================================================
     // Properties
@@ -53,14 +61,24 @@ public abstract class ListingRequestBuilder<T extends Listing> {
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * @return the cache instance of this Listing
+     */
     public ListingCache<T> cache() {
         return cache;
     }
 
+    /**
+     * @return the number of fetched items
+     */
     public int getCount() {
         return count;
     }
 
+    /**
+     * Updates the number of fetched items by adding the given integer
+     */
     protected void updateCount(int toAdd) {
         this.count += toAdd;
     }

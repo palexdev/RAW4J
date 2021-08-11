@@ -18,6 +18,9 @@
 
 package io.github.palexdev.raw4j.utils;
 
+/**
+ * Utils class for working with numbers.
+ */
 public class NumberUtils {
 
     //================================================================================

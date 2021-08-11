@@ -23,6 +23,11 @@ import io.github.palexdev.raw4j.enums.ApiEnumerators.*;
 
 import java.util.Locale;
 
+/**
+ * This enormous class contains all the Reddit's account preferences.
+ * <p></p>
+ * It also offers a method to update the preferences from another {@code Prefs} instance.
+ */
 public class Prefs {
     //================================================================================
     // Properties
@@ -178,7 +183,7 @@ public class Prefs {
     private Boolean organic;
 
     @SerializedName("other_theme")
-    private Boolean otherTheme;
+    private String otherTheme;
 
     @SerializedName("over_18")
     private Boolean over18;
@@ -270,6 +275,12 @@ public class Prefs {
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * Updates this instance properties by getting the ones in the given instance.
+     * <p></p>
+     * This is meant to be used when sending a PATCH request to Reddit using {@link PrefsUpdater#patch()}.
+     */
     public void update(Prefs prefs) {
         acceptPms = prefs.acceptPms;
         activityRelevantAds = prefs.activityRelevantAds;
@@ -356,30 +367,52 @@ public class Prefs {
     //================================================================================
     // GETTERS
     //================================================================================
+
+    /**
+     * Specifies who can send you personal messages (one of {@link AcceptPMsEnum}).
+     */
     public AcceptPMsEnum getAcceptPms() {
         return acceptPms;
     }
 
+    /**
+     * Allow Reddit to use your activity on Reddit to show you more relevant advertisements.
+     */
     public Boolean isActivityRelevantAds() {
         return activityRelevantAds;
     }
 
+    /**
+     * Allow Reddit to log my outbound clicks for personalization.
+     */
     public Boolean isAllowClickTracking() {
         return allowClickTracking;
     }
 
+    /**
+     * I would like to beta test features for Reddit.
+     */
     public Boolean isBeta() {
         return beta;
     }
 
+    /**
+     * Show me links I’ve recently viewed.
+     */
     public Boolean isClickGadget() {
         return clickGadget;
     }
 
+    /**
+     * Collapse messages after I’ve read them.
+     */
     public Boolean isCollapseReadMessages() {
         return collapseReadMessages;
     }
 
+    /**
+     * Compress the link display.
+     */
     public Boolean isCompress() {
         return compress;
     }
@@ -388,62 +421,107 @@ public class Prefs {
         return countryCode;
     }
 
+    /**
+     * Use a creddit to automatically renew my gold if it expires.
+     */
     public Boolean isCredditAutorenew() {
         return credditAutorenew;
     }
 
+    /**
+     * Default comment sort (one of {@link CommentSort}).
+     */
     public CommentSort getDefaultCommentSort() {
         return defaultCommentSort;
     }
 
+    /**
+     * Show additional details in the domain text when available, such as the source subreddit or the content author’s url/name.
+     */
     public Boolean isDomainDetails() {
         return domainDetails;
     }
 
+    /**
+     * Send chat requests as emails.
+     */
     public Boolean isEmailChatRequest() {
         return emailChatRequest;
     }
 
+    /**
+     * Send comment replies as emails.
+     */
     public Boolean isEmailCommentReply() {
         return emailCommentReply;
     }
 
+    /**
+     * Send email digests.
+     */
     public Boolean isEmailDigests() {
         return emailDigests;
     }
 
+    /**
+     * Send messages as emails.
+     */
     public Boolean isEmailMessages() {
         return emailMessages;
     }
 
+    /**
+     * Send post replies as emails.
+     */
     public Boolean isEmailPostReply() {
         return emailPostReply;
     }
 
+    /**
+     * Send private messages as emails.
+     */
     public Boolean isEmailPrivateMessage() {
         return emailPrivateMessage;
     }
 
+    /**
+     * Unsubscribe from all emails.
+     */
     public Boolean isEmailUnsubscribeAll() {
         return emailUnsubscribeAll;
     }
 
+    /**
+     * Send comment upvote updates as emails.
+     */
     public Boolean isEmailUpvoteComment() {
         return emailUpvoteComment;
     }
 
+    /**
+     * Send post upvote updates as emails.
+     */
     public Boolean isEmailUpvotePost() {
         return emailUpvotePost;
     }
 
+    /**
+     * Send new follower alerts as emails.
+     */
     public Boolean isEmailUserNewFollower() {
         return emailUserNewFollower;
     }
 
+    /**
+     * Send username mentions as emails.
+     */
     public Boolean isEmailUsernameMention() {
         return emailUsernameMention;
     }
 
+    /**
+     * Use reddit theme.
+     */
     public Boolean isEnableDefaultThemes() {
         return enableDefaultThemes;
     }
@@ -452,226 +530,394 @@ public class Prefs {
         return enableFollowers;
     }
 
+    /**
+     * Enable feed recommendations.
+     */
     public Boolean isFeedRecommendationsEnabled() {
         return feedRecommendationsEnabled;
     }
 
+    /**
+     * Location (one of {@link GeoPopular}).
+     */
     public GeoPopular getGeoPopular() {
         return geoPopular;
     }
 
+    /**
+     * Hide ads.
+     */
     public Boolean isHideAds() {
         return hideAds;
     }
 
+    /**
+     * Don’t show me submissions after I’ve downvoted them, except my own.
+     */
     public Boolean isHideDowns() {
         return hideDowns;
     }
 
+    /**
+     * Don’t allow search engines to index my user profile.
+     */
     public Boolean isHideFromRobots() {
         return hideFromRobots;
     }
 
+    /**
+     * Don’t show me submissions after I’ve upvoted them, except my own.
+     */
     public Boolean isHideUps() {
         return hideUps;
     }
 
+    /**
+     * Show a dagger on comments voted controversial.
+     */
     public Boolean isHighlightControversial() {
         return highlightControversial;
     }
 
+    /**
+     * Highlight new comments.
+     */
     public Boolean isHighlightNewComments() {
         return highlightNewComments;
     }
 
+    /**
+     * Ignore suggested sorts.
+     */
     public Boolean isIgnoreSuggestedSort() {
         return ignoreSuggestedSort;
     }
 
+    /**
+     * In redesign beta.
+     */
     public Boolean isInRedesignBeta() {
         return inRedesignBeta;
     }
 
+    /**
+     * Label posts that are not safe for work.
+     */
     public Boolean isLabelNsfw() {
         return labelNsfw;
     }
 
+    /**
+     * Interface language (IETF language tag, underscore separated).
+     */
     public Locale getLang() {
         return lang;
     }
 
+    /**
+     * Show legacy search page.
+     */
     public Boolean isLegacySearch() {
         return legacySearch;
     }
 
+    /**
+     * Send message notifications in my browser.
+     */
     public Boolean isLiveOrangeReds() {
         return liveOrangeReds;
     }
 
+    /**
+     * Mark messages as read when I open my inbox.
+     */
     public Boolean isMarkMessagesRead() {
         return markMessagesRead;
     }
 
+    /**
+     * Thumbnail preference (one of {@link Media}).
+     */
     public Media getMedia() {
         return media;
     }
 
+    /**
+     * Media preview preference (one of {@link Media}.
+     */
     public Media getMediaPreview() {
         return mediaPreview;
     }
 
+    /**
+     * Don’t show me comments with a score less than this number (between -100, 100).
+     */
     public Integer getMinCommentScore() {
         return minCommentScore;
     }
 
+    /**
+     * Don’t show me submissions with a score less than this number (between -100, 100).
+     */
     public Integer getMinLinkScore() {
         return minLinkScore;
     }
 
+    /**
+     * Notify me when people say my username.
+     */
     public Boolean isMonitorMentions() {
         return monitorMentions;
     }
 
+    /**
+     * Open links in a new window.
+     */
     public Boolean isNewWindow() {
         return newWindow;
     }
 
+    /**
+     * Enable night mode.
+     */
     public Boolean isNightMode() {
         return nightMode;
     }
 
+    /**
+     * Don’t show thumbnails or media previews for anything labeled NSFW.
+     */
     public Boolean isNoProfanity() {
         return noProfanity;
     }
 
+    /**
+     * Display this many comments by default (between 1, 500).
+     */
     public Integer getNumComments() {
         return numComments;
     }
 
+    /**
+     * Number of links to display at once (between 1, 100).
+     */
     public Integer getNumSites() {
         return numSites;
     }
 
+    /**
+     * Show the spotlight box on the home feed.
+     */
     public Boolean isOrganic() {
         return organic;
     }
 
-    public Boolean isOtherTheme() {
+    /**
+     * Subreddit theme to use (subreddit's name).
+     */
+    public String otherTheme() {
         return otherTheme;
     }
 
+    /**
+     * I am over eighteen years old and willing to view adult content.
+     */
     public Boolean isOver18() {
         return over18;
     }
 
+    /**
+     * Enable private RSS feeds.
+     */
     public Boolean isPrivateFeeds() {
         return privateFeeds;
     }
 
+    /**
+     * iew user profiles on desktop using legacy mode.
+     */
     public Boolean isProfileOptOut() {
         return profileOptOut;
     }
 
+    /**
+     * Make my votes public.
+     */
     public Boolean isPublicVotes() {
         return publicVotes;
     }
 
+    /**
+     * Allow my data to be used for research purposes.
+     */
     public Boolean isResearch() {
         return research;
     }
 
+    /**
+     * Include not safe for work (NSFW) search results in searches.
+     */
     public Boolean isSearchIncludeOver18() {
         return searchIncludeOver18;
     }
 
+    /**
+     * Send crosspost messages.
+     */
     public Boolean isSendCrossPostMessages() {
         return sendCrossPostMessages;
     }
 
+    /**
+     * Send welcome messages.
+     */
     public Boolean isSendWelcomeMessages() {
         return sendWelcomeMessages;
     }
 
+    /**
+     * Show user flair.
+     */
     public Boolean isShowFlair() {
         return showFlair;
     }
 
+    /**
+     * Show how much gold you have remaining on your userpage.
+     */
     public Boolean isShowGoldExpiration() {
         return showGoldExpiration;
     }
 
+    /**
+     * Show link flair.
+     */
     public Boolean isShowLinkFlair() {
         return showLinkFlair;
     }
 
+    /**
+     * Show location based recommendations.
+     */
     public Boolean isShowLocationBasedRecommendations() {
         return showLocationBasedRecommendations;
     }
 
+    /**
+     * Show presence.
+     */
     public Boolean isShowPresence() {
         return showPresence;
     }
 
+    /**
+     * Show promote.
+     */
     public Boolean isShowPromote() {
         return showPromote;
     }
 
+    /**
+     * Allow subreddits to show me custom themes.
+     */
     public Boolean isShowStylesheets() {
         return showStylesheets;
     }
 
+    /**
+     * Show trending subreddits on the home feed.
+     */
     public Boolean isShowTrending() {
         return showTrending;
     }
 
+    /**
+     * Show a link to your Twitter account on your profile.
+     */
     public Boolean isShowTwitter() {
         return showTwitter;
     }
 
+    /**
+     * .
+     */
     public Boolean isStoreVisits() {
         return storeVisits;
     }
 
+    /**
+     * Store visits.
+     */
     public Long getSurveyLastSeenTime() {
         return surveyLastSeenTime;
     }
 
+    /**
+     * Theme selector (subreddit name).
+     */
     public String getThemeSelector() {
         return themeSelector;
     }
 
+    /**
+     * Allow Reddit to use data provided by third-parties to show you more relevant advertisements on Reddit.
+     */
     public Boolean isThirdPartyDataPersonalizedAds() {
         return thirdPartyDataPersonalizedAds;
     }
 
+    /**
+     * Allow personalization of advertisement.
+     */
     public Boolean isThirdPartyPersonalizedAds() {
         return thirdPartyPersonalizedAds;
     }
 
+    /**
+     * Allow personalization of advertisements using third-party website data.
+     */
     public Boolean isThirdPartySiteDataPersonalizedAds() {
         return thirdPartySiteDataPersonalizedAds;
     }
 
+    /**
+     * Allow personalization of content using third-party website data.
+     */
     public Boolean isThirdPartySiteDataPersonalizedContent() {
         return thirdPartySiteDataPersonalizedContent;
     }
 
+    /**
+     * Show message conversations in the inbox.
+     */
     public Boolean isThreadedMessages() {
         return threadedMessages;
     }
 
+    /**
+     * Enable threaded modmail display.
+     */
     public Boolean isThreadedModMail() {
         return threadedModMail;
     }
 
+    /**
+     * Top karma subreddits.
+     */
     public Boolean isTopKarmaSubreddits() {
         return topKarmaSubreddits;
     }
 
+    /**
+     * Use global default.
+     */
     public Boolean isUseGlobalDefaults() {
         return useGlobalDefaults;
     }
 
+    /**
+     * Autoplay Reddit videos on the desktop comments page.
+     */
     public Boolean isVideoAutoplay() {
         return videoAutoplay;
     }
@@ -879,7 +1125,7 @@ public class Prefs {
         this.organic = organic;
     }
 
-    void setOtherTheme(Boolean otherTheme) {
+    void setOtherTheme(String otherTheme) {
         this.otherTheme = otherTheme;
     }
 

@@ -25,12 +25,56 @@ import io.github.palexdev.raw4j.oauth.OAuthInfo;
 import io.github.palexdev.raw4j.oauth.OAuthParameters;
 import okhttp3.RequestBody;
 
+/**
+ * Public API that all OAuth flows must implement.
+ */
 public interface OAuthFlow {
+
+    /**
+     * Main method, this is responsible for authenticating the app.
+     *
+     * @throws OAuthException in case the authentication fails for whatever reason
+     */
     void authenticate() throws OAuthException;
+
+    /**
+     * This is the implementation of tbe HTTP GET method using OkHttp
+     *
+     * @param url the resource URL
+     * @return the response as a {@link JsonObject}
+     */
     JsonObject get(String url);
+
+    /**
+     * This is the implementation of the HTTP PATCH method using OkHttp
+     *
+     * @param url the resource URL
+     * @param requestBody the request body
+     * @return the response as a {@link JsonObject}
+     */
     JsonObject patch(String url, RequestBody requestBody);
+
+    /**
+     * This is the implementation of the HTTP POST method using OkHttp
+     *
+     * @param url the resource URL
+     * @param requestBody the request body
+     * @return the response as a {@link JsonObject}
+     */
     JsonObject post(String url, RequestBody requestBody);
+
+    /**
+     * @return an instance of {@link OAuthInfo} relative to the current/used OAuthFlow
+     */
     OAuthInfo getAuthInfo();
+
+    /**
+     * @return an instance of {@link OAuthData} relative to the current/used OAuthFlow
+     */
     OAuthData getAuthData();
+
+    /**
+     * @return the parameters used for the authentication
+     */
     OAuthParameters getParameters();
 }

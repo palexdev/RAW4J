@@ -40,6 +40,10 @@ public class ExecutorUtils {
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * Returns the instance of a ScheduledExecutorService
+     */
     public static ScheduledExecutorService scheduled() {
         return scheduled;
     }

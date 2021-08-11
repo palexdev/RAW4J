@@ -18,6 +18,33 @@
 
 package io.github.palexdev.raw4j.enums;
 
+/**
+ * This enumerator is needed to specify what kind of App you are trying to authorize
+ */
 public enum LoginType {
-    USERLESS_WEB, USERLESS_INSTALLED, INSTALLED_APP, WEB_APP, SCRIPT
+
+    /**
+     * Suitable for Web Apps without the user being logged in.
+     */
+    USERLESS_WEB,
+
+    /**
+     * Suitable for Installed Apps without the user being logged in.
+     */
+    USERLESS_INSTALLED,
+
+    /**
+     * Suitable for Installed Apps with a logged-in user.
+     */
+    INSTALLED_APP,
+
+    /**
+     * Suitable for Web Apps with a logged-in user.
+     */
+    WEB_APP,
+
+    /**
+     * Suitable for Scripts
+     */
+    SCRIPT
 }

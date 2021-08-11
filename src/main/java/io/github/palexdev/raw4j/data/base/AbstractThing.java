@@ -21,6 +21,16 @@ package io.github.palexdev.raw4j.data.base;
 import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.enums.ThingType;
 
+/**
+ * This is the base class for all {@code Things}.
+ * <p></p>
+ * Common properties of {@code Things} are:
+ * <p> - thingType (JSON: kind)
+ * <p> - id
+ * <p> - name
+ * <p></p>
+ * Implements {@link Thing}
+ */
 public abstract class AbstractThing implements Thing {
     //================================================================================
     // Properties

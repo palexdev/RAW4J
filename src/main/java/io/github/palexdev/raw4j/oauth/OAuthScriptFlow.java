@@ -29,6 +29,11 @@ import okhttp3.RequestBody;
 
 import java.time.Instant;
 
+/**
+ * OAuthFlow for Scripts.
+ * <p></p>
+ * Extends {@link AbstractOAuthFlow} implementing all the abstract methods to: retrieve, refresh and revoke tokens.
+ */
 public class OAuthScriptFlow extends AbstractOAuthFlow {
 
     //================================================================================
@@ -39,11 +44,22 @@ public class OAuthScriptFlow extends AbstractOAuthFlow {
     //================================================================================
     // Override Methods
     //================================================================================
+
+    /**
+     * Simply calls {@link #retrieveAccessToken()}
+     */
     @Override
     public void authenticate() throws OAuthException {
         retrieveAccessToken();
     }
 
+    /**
+     * Retrieves the access token by sending a request to {@link URLEnum#OAUTH_TOKEN_URL}.
+     * <p>
+     * The request body contains the grant type, the username and the password.
+     *
+     * @throws OAuthException if the returned {@link OAuthInfo} is not valid
+     */
     @Override
     protected void retrieveAccessToken() throws OAuthException {
         logger.debug("Retrieving token...");
@@ -62,6 +78,9 @@ public class OAuthScriptFlow extends AbstractOAuthFlow {
         logger.debug("Token Retrieved");
     }
 
+    /**
+     * Simply calls {@link #retrieveAccessToken()}
+     */
     @Override
     protected void refreshToken() {
         logger.debug("Refreshing token...");
@@ -73,6 +92,9 @@ public class OAuthScriptFlow extends AbstractOAuthFlow {
         logger.debug("Token refreshed");
     }
 
+    /**
+     * Revokes the access token or the refresh token, depending on the passed boolean.
+     */
     @Override
     protected void revokeToken(boolean isAccessToken) {
         logger.debug("Revoking token...");
@@ -94,6 +116,10 @@ public class OAuthScriptFlow extends AbstractOAuthFlow {
     //================================================================================
     // Builders
     //================================================================================
+
+    /**
+     * Builder for all OAuthScriptFlows, extends {@link AbstractBuilder}.
+     */
     public static class Builder extends AbstractBuilder {
         private final OAuthScriptFlow authManager;
 
@@ -106,6 +132,9 @@ public class OAuthScriptFlow extends AbstractOAuthFlow {
             return authManager;
         }
 
+        /**
+         * Initializes the OAuth flow instance of this Builder with the given parameters.
+         */
         @Override
         public AbstractOAuthFlow from(OAuthParameters parameters) {
             setAuthDataFrom(parameters);

@@ -21,10 +21,17 @@ package io.github.palexdev.raw4j.data;
 import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.data.base.AbstractThing;
 import io.github.palexdev.raw4j.data.base.T2Data;
+import io.github.palexdev.raw4j.data.base.Thing;
+import io.github.palexdev.raw4j.enums.ThingType;
 import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
 
 import java.io.Serializable;
 
+/**
+ * This data structure contains all the info about a user.
+ * <p>
+ * It's a {@link Thing} of type {@link ThingType#T2}, implements {@link T2Data}.
+ */
 public class User extends AbstractThing implements T2Data, Serializable {
     //================================================================================
     // Properties

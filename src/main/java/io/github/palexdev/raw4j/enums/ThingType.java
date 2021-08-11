@@ -19,37 +19,69 @@
 package io.github.palexdev.raw4j.enums;
 
 import com.google.gson.annotations.SerializedName;
+import io.github.palexdev.raw4j.data.KarmaList;
+import io.github.palexdev.raw4j.data.TrophyList;
+import io.github.palexdev.raw4j.data.UserList;
+import io.github.palexdev.raw4j.data.base.Thing;
 
 import java.util.Arrays;
 
+/**
+ * Enumeration of all the {@link Thing}s types.
+ */
 public enum ThingType {
+
+    /**
+     * According to Reddit API documentation this is for comments.
+     */
     @SerializedName("t1")
     T1("t1"),
 
+    /**
+     * According to Reddit API documentation this is for accounts.
+     */
     @SerializedName("t2")
     T2("t2"),
 
+    /**
+     * According to Reddit API documentation this is for links.
+     */
     @SerializedName("t3")
     T3("t3"),
 
+    /**
+     * According to Reddit API documentation this is for messages.
+     */
     @SerializedName("t4")
     T4("t4"),
 
+    /**
+     * According to Reddit API documentation this is for subreddits.
+     */
     @SerializedName("t5")
     T5("t5"),
 
+    /**
+     * According to Reddit API documentation this is for awards.
+     */
     @SerializedName("t6")
     T6("t6"),
 
+    /**
+     * Not documented but this is for {@link KarmaList}s
+     */
     @SerializedName("KarmaList")
     KARMA_LIST("KarmaList"),
 
-    @SerializedName("Listing")
-    LISTING("Listing"),
-
+    /**
+     * Not documented but this is for {@link TrophyList}s
+     */
     @SerializedName("TrophyList")
     TROPHY_LIST("TrophyList"),
 
+    /**
+     * Not documented but this is for {@link UserList}s
+     */
     @SerializedName("UserList")
     USER_LIST("UserList")
     ;
@@ -60,6 +92,10 @@ public enum ThingType {
         this.s = s;
     }
 
+    /**
+     * Tries to parse the correct ThingType from the given String,
+     * in case it fails, null is returned.
+     */
     public static ThingType from(String name) {
         return Arrays.stream(values())
                 .filter(t -> t.toString().equalsIgnoreCase(name))

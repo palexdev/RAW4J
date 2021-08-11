@@ -19,12 +19,20 @@
 package io.github.palexdev.raw4j.data;
 
 import io.github.palexdev.raw4j.data.base.AbstractThing;
+import io.github.palexdev.raw4j.data.base.Thing;
+import io.github.palexdev.raw4j.enums.ThingType;
 import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
 import io.github.palexdev.raw4j.utils.sorting.TrophyListSortHelper;
+import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 import io.github.palexdev.raw4j.utils.sorting.base.Sortable;
 
 import java.util.List;
 
+/**
+ * Thing of type {@link ThingType#TROPHY_LIST}, implements {@link Sortable}, has empty name(not present in JSON).
+ * <p></p>
+ * This class gives a list of the curren user's trophies.
+ */
 public class TrophyList extends AbstractThing implements Sortable {
     //================================================================================
     // Properties
@@ -35,20 +43,21 @@ public class TrophyList extends AbstractThing implements Sortable {
     private List<Trophy> trophyList;
 
     //================================================================================
-    // Constructors
-    //================================================================================
-    public TrophyList(List<Trophy> trophyList) {
-        this.trophyList = trophyList;
-    }
-
-    //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * @return the instance of the {@link AbstractSortingHelper} to sort the list of trophies
+     */
     @Override
     public TrophyListSortHelper sorting() {
         return helper;
     }
 
+    /**
+     * @return the list of trophies
+     * @see Trophy
+     */
     public List<Trophy> trophies() {
         return trophyList;
     }
@@ -64,6 +73,14 @@ public class TrophyList extends AbstractThing implements Sortable {
     //================================================================================
     // Nested Classes
     //================================================================================
+
+    /**
+     * This represents the data structure in the 'trophies' array of the JSON returned by the Reddit API.
+     * <p></p>
+     * This structure has info about the trophy: id, description, granted date, icon40 and icon70, trophy name, url.
+     * <p></p>
+     * This is a {@link Thing} of type {@link ThingType#T6}, has empty name(not present in JSON).
+     */
     public static class Trophy extends AbstractThing {
         //================================================================================
         // Properties

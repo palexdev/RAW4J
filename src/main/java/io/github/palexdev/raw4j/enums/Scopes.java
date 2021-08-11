@@ -22,6 +22,9 @@ import io.github.palexdev.raw4j.utils.StringUtils;
 
 import java.util.List;
 
+/**
+ * This is an enumeration of all the Reddit Scopes
+ */
 public enum Scopes {
     ACCOUNT,
     CREDDITS,
@@ -52,15 +55,27 @@ public enum Scopes {
     WIKIEDIT,
     WIKIREAD;
 
+    /**
+     * Overridden to return the enumeration name lower case.
+     */
     @Override
     public String toString() {
         return name().toLowerCase();
     }
 
+    /**
+     * @return a list containing all the scopes
+     */
     public static List<Scopes> all() {
         return List.of(values());
     }
 
+    /**
+     * Scopes are passed as a String separated by a space or a comma.
+     * <p>
+     * This method does exactly that, from a list of scopes builds a comma separated
+     * String that contains all the scopes specified in the list.
+     */
     public static String from(List<Scopes> scopes) {
         StringBuilder sb = new StringBuilder();
         for (Scopes scope : scopes) {

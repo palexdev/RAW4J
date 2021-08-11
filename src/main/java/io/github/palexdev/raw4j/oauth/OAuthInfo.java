@@ -25,6 +25,20 @@ import io.github.palexdev.raw4j.json.annotations.Exclude;
 import java.time.Instant;
 import java.util.List;
 
+/**
+ * This class contains all the info about the OAuth state such as:
+ * <p> - the access token
+ * <p> - the access token duration (should always be 3600)
+ * <p> - the access token expire time
+ * <p> - the refresh token
+ * <p> - if the token is permanent or temporary
+ * <p> - the scopes requested
+ * <p></p>
+ * <p></p>
+ * If the object is serialized with the Gson instance provided by RAW4J only the access token will be included in the
+ * resulting JSON for security reasons. However, you can change this behavior by using another Gson instance, it's not
+ * recommended though.
+ */
 public class OAuthInfo {
     //================================================================================
     // Properties
@@ -32,10 +46,6 @@ public class OAuthInfo {
     @SerializedName("access_token")
     @Exclude
     private String accessToken;
-
-    @SerializedName("toke_type")
-    @Exclude
-    private String tokenType;
 
     @SerializedName("expires_in")
     @Exclude
@@ -56,10 +66,6 @@ public class OAuthInfo {
     //================================================================================
     public String getAccessToken() {
         return accessToken;
-    }
-
-    public String getTokenType() {
-        return tokenType;
     }
 
     public Integer getExpiresIn() {
@@ -98,14 +104,22 @@ public class OAuthInfo {
         this.scopes = scopes;
     }
 
+    /**
+     * Checks if the access token is valid.
+     */
     public boolean isValid() {
         return expiresIn != null && Instant.now().getEpochSecond() < expireTime;
     }
 
+    /**
+     * Used to reset the object's fields when the token is revoked or
+     * when you try to refresh the token but it was not permanent.
+     *
+     * @param isAccessToken to specify what to reset
+     */
     void revoke(boolean isAccessToken) {
         if (isAccessToken) {
             accessToken = null;
-            tokenType = null;
             expiresIn = null;
             expireTime = null;
         } else {

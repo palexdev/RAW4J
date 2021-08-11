@@ -20,6 +20,9 @@ package io.github.palexdev.raw4j.api;
 
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 
+/**
+ * This is just a wrapper class that contain all the instances to use the various APIs.
+ */
 public class RedditApiWrapper {
     //================================================================================
     // Properties
@@ -38,10 +41,17 @@ public class RedditApiWrapper {
     //================================================================================
     // Getters
     //================================================================================
+
+    /**
+     * @return an instance of {@link AccountApi} to use Account APIs
+     */
     public AccountApi accountApi() {
         return accountApi;
     }
 
+    /**
+     * @return an instance of {@link UserApi} to use User APIs
+     */
     public UserApi userApi() {
         return userApi;
     }

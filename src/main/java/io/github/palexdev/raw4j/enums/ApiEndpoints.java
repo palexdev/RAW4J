@@ -18,6 +18,9 @@
 
 package io.github.palexdev.raw4j.enums;
 
+/**
+ * This enumerator contains all the Reddit API endpoints currently covered.
+ */
 public enum ApiEndpoints {
     ME("/api/v1/me"),
     ME_KARMA("/api/v1/me/karma"),
@@ -35,11 +38,17 @@ public enum ApiEndpoints {
         this.endpoint = endpoint;
     }
 
+    /**
+     * @return the complete endpoint URL by prepending {@link URLEnum#OAUTH_API_BASE_URL}
+     */
     @Override
     public String toString() {
         return URLEnum.OAUTH_API_BASE_URL + endpoint;
     }
 
+    /**
+     * @return the complete endpoint URL by prepending {@link URLEnum#OAUTH_API_BASE_URL} and adds '?raw_json=1' to the URL parameters
+     */
     public String toStringRaw() {
         return URLEnum.OAUTH_API_BASE_URL + endpoint + "?raw_json=1";
     }

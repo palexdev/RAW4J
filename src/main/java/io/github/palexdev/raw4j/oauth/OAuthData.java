@@ -20,6 +20,13 @@ package io.github.palexdev.raw4j.oauth;
 
 import java.io.Serializable;
 
+/**
+ * This class contains all the info related to the user and the app such as:
+ * <p> - username
+ * <p> - password (only for {@link OAuthScriptFlow}
+ * <p> - clientID
+ * <p> - clientSecret (only for Web Apps and Scripts)
+ */
 public class OAuthData implements Serializable {
     //================================================================================
     // Properties

@@ -25,6 +25,9 @@ import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Sort helper for {@link TrophyList}s, extends {@link AbstractSortingHelper}.
+ */
 public class TrophyListSortHelper extends AbstractSortingHelper<TrophyList, Trophy> {
     //================================================================================
     // Properties
@@ -41,16 +44,32 @@ public class TrophyListSortHelper extends AbstractSortingHelper<TrophyList, Trop
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * Sets the comparator to one that sorts by {@link Trophy#getDescription()}
+     * <p>
+     * To confirm the sort call {@link #sort()}
+     */
     public TrophyListSortHelper sortByDescription() {
         sortBy(Comparator.comparing(Trophy::getDescription));
         return this;
     }
 
+    /**
+     * Sets the comparator to one that sorts by {@link Trophy#getTrophyName()}
+     * <p>
+     * To confirm the sort call {@link #sort()}
+     */
     public TrophyListSortHelper sortByName() {
         sortBy(Comparator.comparing(Trophy::getTrophyName));
         return this;
     }
 
+    /**
+     * Sets the comparator to one that sorts by {@link Trophy#getGrantedTime()}
+     * <p>
+     * To confirm the sort call {@link #sort()}
+     */
     public TrophyListSortHelper sortByTime() {
         sortBy(Comparator.comparing(Trophy::getGrantedTime));
         return this;
@@ -59,6 +78,10 @@ public class TrophyListSortHelper extends AbstractSortingHelper<TrophyList, Trop
     //================================================================================
     // Override Methods
     //================================================================================
+
+    /**
+     * Sorts the list with the built comparator.
+     */
     @Override
     public TrophyList sort() {
         if (getList() == null) {
@@ -69,6 +92,9 @@ public class TrophyListSortHelper extends AbstractSortingHelper<TrophyList, Trop
         return trophyList;
     }
 
+    /**
+     * @return the list of {@link Trophy}s
+     */
     @Override
     public List<Trophy> getList() {
         return trophyList.trophies();

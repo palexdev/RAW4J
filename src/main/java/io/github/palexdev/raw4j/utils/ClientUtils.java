@@ -28,6 +28,9 @@ import java.util.List;
 
 import static io.github.palexdev.raw4j.utils.StringUtils.checkString;
 
+/**
+ * Utils class for the client.
+ */
 public class ClientUtils {
 
     //================================================================================
@@ -39,6 +42,12 @@ public class ClientUtils {
     //================================================================================
     // Public API
     //================================================================================
+
+    /**
+     * Checks if the specified parameters are correct for the specified login type.
+     *
+     * @throws IllegalStateException if the parameters are not valid
+     */
     public static void checkParameters(LoginType loginType, OAuthParameters parameters) {
         switch (loginType) {
             case USERLESS_INSTALLED -> installedAppOnlyCheck(
@@ -75,6 +84,9 @@ public class ClientUtils {
         }
     }
 
+    /**
+     * Builds a URL from the given arguments, {@link MalformedURLException} is caught by a try catch block.
+     */
     public static URL url(String protocol, String host, int port, String path) {
         URL url = null;
         try {
@@ -88,6 +100,10 @@ public class ClientUtils {
     //================================================================================
     // Private API
     //================================================================================
+
+    /**
+     * Userless Web Apps check, needed parameters are: User-Agent, ClientID, ClientSecret and Scopes.
+     */
     private static void webAppOnlyCheck(String userAgent, String clientID, String clientSecret, List<Scopes> scopes) {
         StringBuilder sb = new StringBuilder();
         sb.append(checkString(userAgent, "User-Agent, "));
@@ -99,6 +115,9 @@ public class ClientUtils {
         checkErrors(sb.toString());
     }
 
+    /**
+     * Userless Installed Apps check, needed parameters are: User-Agent, ClientID and Scopes.
+     */
     private static void installedAppOnlyCheck(String userAgent, String clientID, List<Scopes> scopes) {
         StringBuilder sb = new StringBuilder();
         sb.append(checkString(userAgent, "User-Agent, "));
@@ -109,6 +128,9 @@ public class ClientUtils {
         checkErrors(sb.toString());
     }
 
+    /**
+     * Logged user Installed Apps check, needed parameters are: User-Agent, ClientID, RedirectURI and Scopes.
+     */
     private static void installedCheck(String userAgent, String clientID, URL redirectURI, List<Scopes> scopes) {
         StringBuilder sb = new StringBuilder();
         sb.append(checkString(userAgent, "User-Agent, "));
@@ -120,6 +142,9 @@ public class ClientUtils {
         checkErrors(sb.toString());
     }
 
+    /**
+     * Logged user Web Apps check, needed parameters are: User-Agent, ClientID, ClientSecret, RedirectURI and Scopes.
+     */
     private static void webCheck(String userAgent, String clientID, String clientSecret, URL redirectURI, List<Scopes> scopes) {
         StringBuilder sb = new StringBuilder();
         sb.append(checkString(userAgent, "User-Agent, "));
@@ -132,7 +157,9 @@ public class ClientUtils {
         checkErrors(sb.toString());
     }
 
-
+    /**
+     * Scripts check, needed parameters are: User-Agent, Username, Password, ClientID and ClientSecret.
+     */
     private static void scriptCheck(String userAgent, String username, String password, String clientID, String clientSecret) {
         StringBuilder sb = new StringBuilder();
         sb.append(checkString(userAgent, "User-Agent, "));
@@ -143,6 +170,9 @@ public class ClientUtils {
         checkErrors(sb.toString());
     }
 
+    /**
+     * Checks if the given string is not empty and throws an {@link IllegalStateException}.
+     */
     private static void checkErrors(String errors) throws IllegalStateException {
         if (!errors.isEmpty()) {
             String s = StringUtils.replaceLast(errors, ",", "");

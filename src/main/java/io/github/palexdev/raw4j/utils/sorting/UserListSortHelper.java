@@ -18,6 +18,7 @@
 
 package io.github.palexdev.raw4j.utils.sorting;
 
+import io.github.palexdev.raw4j.data.KarmaList;
 import io.github.palexdev.raw4j.data.UserList;
 import io.github.palexdev.raw4j.data.UserList.ListingUser;
 import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
@@ -25,6 +26,9 @@ import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Sort helper for {@link UserList}s, extends {@link AbstractSortingHelper}.
+ */
 public class UserListSortHelper extends AbstractSortingHelper<UserList, ListingUser> {
     //================================================================================
     // Properties
@@ -41,11 +45,22 @@ public class UserListSortHelper extends AbstractSortingHelper<UserList, ListingU
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * Sets the comparator to one that sorts by {@link ListingUser#getName()}
+     * <p>
+     * To confirm the sort call {@link #sort()}
+     */
     public UserListSortHelper sortByName() {
         sortBy(Comparator.comparing(ListingUser::getName));
         return this;
     }
 
+    /**
+     * Sets the comparator to one that sorts by {@link ListingUser#getDate()}
+     * <p>
+     * To confirm the sort call {@link #sort()}
+     */
     public UserListSortHelper sortByTime() {
         sortBy(Comparator.comparing(ListingUser::getDate));
         return this;
@@ -54,6 +69,10 @@ public class UserListSortHelper extends AbstractSortingHelper<UserList, ListingU
     //================================================================================
     // Override Methods
     //================================================================================
+
+    /**
+     * Sorts the list with the built comparator.
+     */
     @Override
     public UserList sort() {
         if (getList() == null) {
@@ -64,6 +83,9 @@ public class UserListSortHelper extends AbstractSortingHelper<UserList, ListingU
         return userList;
     }
 
+    /**
+     * @return the list of {@link KarmaList.KarmaListSubreddit}s
+     */
     @Override
     public List<ListingUser> getList() {
         return userList.users();

@@ -18,8 +18,25 @@
 
 package io.github.palexdev.raw4j.enums;
 
+import io.github.palexdev.raw4j.data.UserList;
+
+/**
+ * Enumeration for the various {@link UserList} types.
+ */
 public enum UserListType {
+
+    /**
+     * Specifies that the {@link UserList} contains a list of blocked users.
+     */
     BLOCKED,
+
+    /**
+     * Specifies that the {@link UserList} contains a list of friends.
+     */
     FRIENDS,
+
+    /**
+     * Specifies that the {@link UserList} contains a list of trusted users.
+     */
     TRUSTED
 }

@@ -23,6 +23,9 @@ import io.github.palexdev.raw4j.enums.ApiEndpoints;
 import io.github.palexdev.raw4j.json.GsonInstance;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 
+/**
+ * This class contains all methods to interact with User APIs.
+ */
 public class UserApi {
     //================================================================================
     // Properties
@@ -39,16 +42,31 @@ public class UserApi {
     //================================================================================
     // API Implementation
     //================================================================================
+
+    /**
+     * Retrieves the {@link User} data structure for the given username.
+     * <p></p>
+     * Before returning checks if the user exists, in case it doesn't, returns null.
+     */
     public User getUser(String username) {
         String url = ApiEndpoints.USER.toStringRaw().formatted(username);
         User user = GsonInstance.gson().fromJson(authManager.get(url), User.class);
         return userExists(user) ? user : null;
     }
 
+    /**
+     * Checks if the given {@link User} exists.
+     */
     public boolean userExists(User user) {
         return user.getUsername() != null;
     }
 
+    /**
+     * Checks if the given username exists.
+     * <p></p>
+     * This works by retrieving the {@link User} data structure for the given username and
+     * then checking its properties.
+     */
     public boolean userExists(String username) {
         User user = getUser(username);
         return userExists(user);

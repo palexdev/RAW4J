@@ -20,6 +20,9 @@ package io.github.palexdev.raw4j.utils;
 
 import java.util.Random;
 
+/**
+ * Utils class for working with Strings.
+ */
 public class StringUtils {
 
     //================================================================================
@@ -40,12 +43,12 @@ public class StringUtils {
     }
 
     /**
-     * Replaces the last occurrence of the given string with a new string.
+     * Replaces the last occurrence of the given String with a new String.
      *
-     * @param string      The string to modify
+     * @param string      The String to modify
      * @param substring   The last occurrence to find
      * @param replacement The replacement
-     * @return The modified string
+     * @return The modified String
      */
     public static String replaceLast(String string, String substring, String replacement) {
         int index = string.lastIndexOf(substring);

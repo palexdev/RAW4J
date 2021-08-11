@@ -31,6 +31,18 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * This is the base class of all OAuth flows, implements {@link OAuthFlow}.
+ * <p></p>
+ * This class defines two separate {@link OkHttpClient}s, one for GET requests and one for POST/PATCH requests.
+ * <p></p>
+ * This class also keeps a reference for: {@link OAuthInfo}, {@link OAuthData} and {@link OAuthParameters}.
+ * <p></p>
+ * On Reddit the access token expire after 1h, to be sure a request is sent with an invalid token we make the
+ * token expire after 57min (3min less, can be changed).
+ * <p></p>
+ * Defines three abstract methods to: retrieve the access token, refresh the token, revoke a token.
+ */
 public abstract class AbstractOAuthFlow implements OAuthFlow {
     //================================================================================
     // Properties
@@ -42,7 +54,7 @@ public abstract class AbstractOAuthFlow implements OAuthFlow {
     protected final OAuthData authData;
     protected OAuthInfo authInfo;
     protected OAuthParameters parameters;
-    private int expireSecondsOffset = 180;
+    private long expireSecondsOffset = 180;
 
     //================================================================================
     // Constructors
@@ -69,6 +81,11 @@ public abstract class AbstractOAuthFlow implements OAuthFlow {
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * Utility method to build an {@link OkHttpClient} instance with the given authenticator
+     * and an interceptor that specifies the app User-Agent in the headers.
+     */
     protected OkHttpClient buildClient(Authenticator authenticator) {
         Interceptor interceptor = chain -> chain.proceed(
                 chain.request()
@@ -171,11 +188,18 @@ public abstract class AbstractOAuthFlow implements OAuthFlow {
     //================================================================================
     // Getters, Setters
     //================================================================================
-    protected int getExpireSecondsOffset() {
+
+    /**
+     * The seconds to subtract from the real token expire time, by default 180s (token expires in 60min - 3min = 57min).
+     */
+    protected long getExpireSecondsOffset() {
         return expireSecondsOffset;
     }
 
-    protected void setExpireSecondsOffset(int expireSecondsOffset) {
+    /**
+     * Sets the seconds to subtract from the real token expire time.
+     */
+    protected void setExpireSecondsOffset(long expireSecondsOffset) {
         this.expireSecondsOffset = Math.abs(expireSecondsOffset);
     }
 
@@ -194,6 +218,10 @@ public abstract class AbstractOAuthFlow implements OAuthFlow {
         return parameters;
     }
 
+    /**
+     * Since we rely on builder classes and no-arg constructor to build an OAuthFlow instance,
+     * this is needed to set the authentication parameters specified by the user.
+     */
     protected void setParameters(OAuthParameters parameters) {
         this.parameters = parameters;
     }
@@ -201,7 +229,16 @@ public abstract class AbstractOAuthFlow implements OAuthFlow {
     //================================================================================
     // Builders
     //================================================================================
+
+    /**
+     * Abstract base Builder for all OAuthFlows extending this class.
+     */
     protected abstract static class AbstractBuilder {
+
+        /**
+         * Sets the {@link OAuthData} properties of this flow from the given parameters,
+         * this should be done in the {@link #from(OAuthParameters)} method.
+         */
         protected void setAuthDataFrom(OAuthParameters parameters) {
             getOAuthManager().getAuthData().setClientID(parameters.getClientID());
             getOAuthManager().getAuthData().setClientSecret(parameters.getClientSecret());

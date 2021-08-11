@@ -25,6 +25,49 @@ import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 
 import java.util.List;
 
+/**
+ * This is the main class of this framework. RedditClient is responsible for authenticating the app/script,
+ * logging in and accessing APIs
+ * <p></p>
+ * There are two ways to obtain a RedditClient instance:
+ * <p> 1) Via static method {@link #login(OAuthParameters)} (preferred way)
+ * <p> 2) Via constructor {@link #RedditClient(OAuthFlow)}
+ *<p></p>
+ * <pre>First method example
+ * {@code
+ * // Build the OAuthParams object
+ * OAuthParameters parameters = new OAuthParameters.AuthCodeFlowBuilder()
+ *         .setUserAgent(INSTALLED_USER_AGENT)
+ *         .setClientID(INSTALLED_CLIENT_ID)
+ *         .setRedirectURI(redirectURI)
+ *         .setScopes(Scopes.all())
+ *         .build(LoginType.INSTALLED_APP);
+ *
+ * // Obtain the RedditClient instance
+ * RedditClient client = RedditClient.login(parameters);
+ * }
+ * </pre>
+ *
+ * <pre>Second method example
+ * {@code
+ * // Build the OAuthParams object
+ * OAuthParameters parameters = new OAuthParameters.AuthCodeFlowBuilder()
+ *         .setUserAgent(INSTALLED_USER_AGENT)
+ *         .setClientID(INSTALLED_CLIENT_ID)
+ *         .setRedirectURI(redirectURI)
+ *         .setScopes(Scopes.all())
+ *         .build(LoginType.INSTALLED_APP);
+ *
+ * // Obtain an instance of OAuthFlow (depends on the app type you need, let's suppose a web app, logged user)
+ * OAuthFlow authManager = new OAuthAuthorizationCodeFlow.Builder().from(parameters);
+ *
+ * // Obtain the RedditClient instance
+ * RedditClient client = new RedditClient(authManager).login();
+ * }
+ * </pre>
+ * <p></p>
+ * NOTE: this should be implied but... It's not recommended having more than one client at the same time
+ */
 public class RedditClient {
     //================================================================================
     // Properties
@@ -43,6 +86,11 @@ public class RedditClient {
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * From the given parameters builds the appropriate {@link OAuthFlow}, builds a RedditClient instance
+     * and then calls {@link #login()}.
+     */
     public static RedditClient login(OAuthParameters parameters) {
         OAuthFlow authManager;
         RedditClient redditClient;
@@ -67,6 +115,11 @@ public class RedditClient {
         return null;
     }
 
+    /**
+     * Responsible for authenticating the client, calls {@link OAuthFlow#authenticate()}.
+     * <p>
+     * If the authentication process went well returns the RedditClient instance otherwise returns null.
+     */
     public RedditClient login() {
         try {
             authManager.authenticate();
@@ -80,18 +133,31 @@ public class RedditClient {
     //================================================================================
     // Getters
     //================================================================================
+
+    /**
+     * @return an instance of {@link RedditApiWrapper} to access the various APIs
+     */
     public RedditApiWrapper api() {
         return apiWrapper;
     }
 
+    /**
+     * @return an instance {@link OAuthData}
+     */
     public OAuthData getAuthData() {
         return authManager.getAuthData();
     }
 
+    /**
+     * @return an instance of {@link OAuthInfo}
+     */
     public OAuthInfo getAuthInfo() {
         return authManager.getAuthInfo();
     }
 
+    /**
+     * @return the list of specified scopes
+     */
     public List<Scopes> getScopes() {
         return getAuthInfo().getScopes();
     }

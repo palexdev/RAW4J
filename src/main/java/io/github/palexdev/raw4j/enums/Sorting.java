@@ -18,6 +18,10 @@
 
 package io.github.palexdev.raw4j.enums;
 
+/**
+ * Enumerator to specify the sorting mode.
+ */
 public enum Sorting {
-    ASCENDING, DESCENDING
+    ASCENDING,
+    DESCENDING
 }

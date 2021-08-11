@@ -20,11 +20,18 @@ package io.github.palexdev.raw4j.data;
 
 import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.data.base.AbstractThing;
+import io.github.palexdev.raw4j.enums.ThingType;
 import io.github.palexdev.raw4j.utils.sorting.KarmaListSortHelper;
+import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 import io.github.palexdev.raw4j.utils.sorting.base.Sortable;
 
 import java.util.List;
 
+/**
+ * Thing of type {@link ThingType#KARMA_LIST}, implements {@link Sortable}, has empty name(not present in JSON).
+ * <p></p>
+ * This class offers a breakdown of subreddit karma.
+ */
 public class KarmaList extends AbstractThing implements Sortable {
     //================================================================================
     // Properties
@@ -37,11 +44,19 @@ public class KarmaList extends AbstractThing implements Sortable {
     //================================================================================
     // Methods
     //================================================================================
+
+    /**
+     * @return the instance of the {@link AbstractSortingHelper} to sort the list of subreddits
+     */
     @Override
     public KarmaListSortHelper sorting() {
         return helper;
     }
 
+    /**
+     * @return the list of subreddits
+     * @see KarmaListSubreddit
+     */
     public List<KarmaListSubreddit> subreddits() {
         return subredditList;
     }
@@ -57,6 +72,12 @@ public class KarmaList extends AbstractThing implements Sortable {
     //================================================================================
     // Nested Classes
     //================================================================================
+
+    /**
+     * This represents the data structure in the 'data' array of the JSON returned by the Reddit API.
+     * <p></p>
+     * This structure has info about: the subreddit name, the comment karma and link karma accumulated in that subreddit.
+     */
     public static class KarmaListSubreddit {
         //================================================================================
         // Properties

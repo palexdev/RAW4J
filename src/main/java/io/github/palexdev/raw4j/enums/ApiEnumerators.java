@@ -20,6 +20,9 @@ package io.github.palexdev.raw4j.enums;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * This class contains various enumerators needed for APIs
+ */
 public class ApiEnumerators {
 
     private ApiEnumerators() {}
