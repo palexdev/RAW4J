@@ -37,7 +37,7 @@ Or to retrieve the logged user info...
 User user = client.api().accountApi().getLoggedUser();
 
 /*
-Note that the logger user info are stored in memory, so if you need to refresh the data
+Note that the logged user info are stored in memory, so if you need to refresh the data
 you must call...
  */
 User user = client.api().userApi().refreshLoggedUser().getLoggedUser();
