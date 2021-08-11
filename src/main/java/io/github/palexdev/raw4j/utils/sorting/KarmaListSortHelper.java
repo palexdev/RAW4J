@@ -16,41 +16,56 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.api;
+package io.github.palexdev.raw4j.utils.sorting;
 
-import io.github.palexdev.raw4j.data.User;
-import io.github.palexdev.raw4j.enums.ApiEndpoints;
-import io.github.palexdev.raw4j.json.GsonInstance;
-import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
+import io.github.palexdev.raw4j.data.KarmaList;
+import io.github.palexdev.raw4j.data.KarmaList.KarmaListSubreddit;
+import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 
-public class UserApi {
+import java.util.Comparator;
+import java.util.List;
+
+public class KarmaListSortHelper extends AbstractSortingHelper<KarmaList, KarmaListSubreddit> {
     //================================================================================
     // Properties
     //================================================================================
-    private final OAuthFlow authManager;
+    private final KarmaList karmaList;
 
     //================================================================================
     // Constructors
     //================================================================================
-    UserApi(OAuthFlow authManager) {
-        this.authManager = authManager;
+    public KarmaListSortHelper(KarmaList karmaList) {
+        this.karmaList = karmaList;
     }
 
     //================================================================================
-    // API Implementation
+    // Methods
     //================================================================================
-    public User getUser(String username) {
-        String url = ApiEndpoints.USER.toStringRaw().formatted(username);
-        User user = GsonInstance.gson().fromJson(authManager.get(url), User.class);
-        return userExists(user) ? user : null;
+    public KarmaListSortHelper sortByName() {
+        sortBy(Comparator.comparing(KarmaListSubreddit::getName));
+        return this;
     }
 
-    public boolean userExists(User user) {
-        return user.getUsername() != null;
+    public KarmaListSortHelper sortByTotalKarma() {
+        sortBy(Comparator.comparing(s -> s.getLinkKarma() + s.getCommentKarma()));
+        return this;
     }
 
-    public boolean userExists(String username) {
-        User user = getUser(username);
-        return userExists(user);
+    //================================================================================
+    // Override Methods
+    //================================================================================
+    @Override
+    public KarmaList sort() {
+        if (getList() == null) {
+            return karmaList;
+        }
+
+        getList().sort(comparator);
+        return karmaList;
+    }
+
+    @Override
+    public List<KarmaListSubreddit> getList() {
+        return karmaList.subreddits();
     }
 }

@@ -16,41 +16,41 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.api;
+package io.github.palexdev.raw4j.utils.sorting.base;
 
-import io.github.palexdev.raw4j.data.User;
-import io.github.palexdev.raw4j.enums.ApiEndpoints;
-import io.github.palexdev.raw4j.json.GsonInstance;
-import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
+import io.github.palexdev.raw4j.enums.Sorting;
 
-public class UserApi {
+import java.util.Comparator;
+import java.util.List;
+
+public abstract class AbstractSortingHelper<T, C> {
     //================================================================================
     // Properties
     //================================================================================
-    private final OAuthFlow authManager;
+    protected Comparator<C> comparator;
 
     //================================================================================
-    // Constructors
+    // Abstract Methods
     //================================================================================
-    UserApi(OAuthFlow authManager) {
-        this.authManager = authManager;
+    public abstract T sort();
+    public abstract List<C> getList();
+
+    //================================================================================
+    // Methods
+    //================================================================================
+    public AbstractSortingHelper<T, C> sortBy(Comparator<C> comparator) {
+        this.comparator = comparator;
+        return this;
     }
 
-    //================================================================================
-    // API Implementation
-    //================================================================================
-    public User getUser(String username) {
-        String url = ApiEndpoints.USER.toStringRaw().formatted(username);
-        User user = GsonInstance.gson().fromJson(authManager.get(url), User.class);
-        return userExists(user) ? user : null;
+    public AbstractSortingHelper<T, C> andThen(Comparator<C> comparator) {
+        this.comparator = this.comparator.thenComparing(comparator);
+        return this;
     }
-
-    public boolean userExists(User user) {
-        return user.getUsername() != null;
-    }
-
-    public boolean userExists(String username) {
-        User user = getUser(username);
-        return userExists(user);
+    public AbstractSortingHelper<T, C> mode(Sorting sorting) {
+        if (sorting == Sorting.DESCENDING) {
+            comparator = comparator.reversed();
+        }
+        return this;
     }
 }

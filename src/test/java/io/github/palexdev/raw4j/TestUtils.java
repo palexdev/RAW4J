@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 public class TestUtils {
     private static final Path tokenFileStore = Path.of(System.getProperty("user.home") + "/Desktop/ReddStoredToken.json");
@@ -77,5 +80,22 @@ public class TestUtils {
             ex.printStackTrace();
         }
         return authInfo;
+    }
+
+    public static <T> boolean isSorted(List<T> list, Comparator<T> comparator) {
+        if (list.isEmpty() || list.size() == 1) {
+            return true;
+        }
+
+        Iterator<T> iter = list.iterator();
+        T current, previous = iter.next();
+        while (iter.hasNext()) {
+            current = iter.next();
+            if (comparator.compare(previous, current) > 0) {
+                return false;
+            }
+            previous = current;
+        }
+        return true;
     }
 }

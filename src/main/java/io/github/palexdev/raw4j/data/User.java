@@ -21,7 +21,7 @@ package io.github.palexdev.raw4j.data;
 import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.data.base.AbstractThing;
 import io.github.palexdev.raw4j.data.base.T2Data;
-import io.github.palexdev.raw4j.json.JsonPathExpression;
+import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
 
 import java.io.Serializable;
 
@@ -80,6 +80,10 @@ public class User extends AbstractThing implements T2Data, Serializable {
     @JsonPathExpression("data.over_18")
     @SerializedName("over_18")
     private boolean over18;
+
+    @JsonPathExpression("data.name")
+    @SerializedName("name")
+    private String username;
 
     //================================================================================
     // Getters
@@ -149,8 +153,17 @@ public class User extends AbstractThing implements T2Data, Serializable {
         return over18;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     @Override
     public int getTotalKarma() {
         return awardeeKarma + awarderKarma + commentKarma + linkKarma;
+    }
+
+    @Override
+    public String getName() {
+        return (getType() == null) ? "" : (getType() + "_" + getID());
     }
 }

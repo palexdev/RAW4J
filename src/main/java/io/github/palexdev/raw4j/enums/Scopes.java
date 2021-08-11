@@ -23,36 +23,38 @@ import io.github.palexdev.raw4j.utils.StringUtils;
 import java.util.List;
 
 public enum Scopes {
-    IDENTITY("identity"),
-    EDIT("edit"),
-    FLAIR("flair"),
-    HISTORY("history"),
-    MODCONFIG("modconfig"),
-    MODFLAIR("modflair"),
-    MODLOG("modlog"),
-    MODPOSTS("modposts"),
-    MODWIKI("modwiki"),
-    MYSUBREDDITS("mysubreddits"),
-    PRIVATEMESSAGES("privatemessages"),
-    READ("read"),
-    REPORT("report"),
-    SAVE("save"),
-    SUBMIT("submit"),
-    SUBSCRIBE("subscribe"),
-    VOTE("vote"),
-    WIKIEDIT("wikiedit"),
-    WIKIREAD("wikiread")
-    ;
-
-    private final String scope;
-
-    Scopes(String scope) {
-        this.scope = scope;
-    }
+    ACCOUNT,
+    CREDDITS,
+    EDIT,
+    FLAIR,
+    HISTORY,
+    IDENTITY,
+    LIVEMANAGE,
+    MODCONFIG,
+    MODCONTRIBUTORS,
+    MODFLAIR,
+    MODLOG,
+    MODMAIL,
+    MODOTHERS,
+    MODPOSTS,
+    MODSELF,
+    MODTRAFFIC,
+    MODWIKI,
+    MYSUBREDDITS,
+    PRIVATEMESSAGES,
+    READ,
+    REPORT,
+    SAVE,
+    STRUCTUREDSTYLES,
+    SUBMIT,
+    SUBSCRIBE,
+    VOTE,
+    WIKIEDIT,
+    WIKIREAD;
 
     @Override
     public String toString() {
-        return scope;
+        return name().toLowerCase();
     }
 
     public static List<Scopes> all() {

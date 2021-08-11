@@ -16,40 +16,61 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.json;
+package io.github.palexdev.raw4j.utils.sorting;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import io.github.palexdev.raw4j.json.annotations.Exclude;
+import io.github.palexdev.raw4j.data.TrophyList;
+import io.github.palexdev.raw4j.data.TrophyList.Trophy;
+import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 
-public class OAuthInfoExclusionStrategy implements ExclusionStrategy {
+import java.util.Comparator;
+import java.util.List;
+
+public class TrophyListSortHelper extends AbstractSortingHelper<TrophyList, Trophy> {
     //================================================================================
     // Properties
     //================================================================================
-    private static final OAuthInfoExclusionStrategy strategy = new OAuthInfoExclusionStrategy();
+    private final TrophyList trophyList;
 
     //================================================================================
     // Constructors
     //================================================================================
-    private OAuthInfoExclusionStrategy() {}
+    public TrophyListSortHelper(TrophyList trophyList) {
+        this.trophyList = trophyList;
+    }
 
     //================================================================================
-    // Getters
+    // Methods
     //================================================================================
-    public static OAuthInfoExclusionStrategy instance() {
-        return strategy;
+    public TrophyListSortHelper sortByDescription() {
+        sortBy(Comparator.comparing(Trophy::getDescription));
+        return this;
+    }
+
+    public TrophyListSortHelper sortByName() {
+        sortBy(Comparator.comparing(Trophy::getTrophyName));
+        return this;
+    }
+
+    public TrophyListSortHelper sortByTime() {
+        sortBy(Comparator.comparing(Trophy::getGrantedTime));
+        return this;
     }
 
     //================================================================================
     // Override Methods
     //================================================================================
     @Override
-    public boolean shouldSkipField(FieldAttributes field) {
-        return field.getAnnotation(Exclude.class) != null;
+    public TrophyList sort() {
+        if (getList() == null) {
+            return trophyList;
+        }
+
+        getList().sort(comparator);
+        return trophyList;
     }
 
     @Override
-    public boolean shouldSkipClass(Class<?> clazz) {
-        return false;
+    public List<Trophy> getList() {
+        return trophyList.trophies();
     }
 }

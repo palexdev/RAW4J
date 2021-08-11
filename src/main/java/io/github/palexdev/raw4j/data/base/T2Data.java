@@ -90,6 +90,11 @@ public interface T2Data {
     boolean isOver18();
 
     /**
+     * @return the Reddit username
+     */
+    String getUsername();
+
+    /**
      * @return the sum of {@link #getAwardeeKarma()}, {@link #getAwarderKarma()}, {@link #getCommentKarma()} and {@link #getLinkKarma()}
      */
     int getTotalKarma();

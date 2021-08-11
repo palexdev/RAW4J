@@ -118,6 +118,7 @@ public class OAuthTest {
         RedditClient client = RedditClient.login(parameters);
         assertNotNull(client);
         assertTrue(client.getAuthInfo().isValid());
+        System.out.println(client.getAuthInfo().getAccessToken());
     }
 
     @Test

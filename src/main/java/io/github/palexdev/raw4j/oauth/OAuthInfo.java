@@ -20,7 +20,7 @@ package io.github.palexdev.raw4j.oauth;
 
 import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.enums.Scopes;
-import io.github.palexdev.raw4j.json.Exclude;
+import io.github.palexdev.raw4j.json.annotations.Exclude;
 
 import java.time.Instant;
 import java.util.List;

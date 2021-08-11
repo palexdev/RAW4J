@@ -16,41 +16,52 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.api;
+package io.github.palexdev.raw4j.api.listing.base;
 
-import io.github.palexdev.raw4j.data.User;
-import io.github.palexdev.raw4j.enums.ApiEndpoints;
-import io.github.palexdev.raw4j.json.GsonInstance;
+import io.github.palexdev.raw4j.cache.ListingCache;
+import io.github.palexdev.raw4j.data.UserList;
+import io.github.palexdev.raw4j.data.base.Listing;
+import io.github.palexdev.raw4j.enums.UserListType;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 
-public class UserApi {
+public abstract class ListingRequestBuilder<T extends Listing> {
     //================================================================================
     // Properties
     //================================================================================
-    private final OAuthFlow authManager;
+    protected final OAuthFlow authManager;
+    protected final ListingCache<T> cache = new ListingCache<>();
+    protected int count;
+    protected int limit = 25;
 
     //================================================================================
     // Constructors
     //================================================================================
-    UserApi(OAuthFlow authManager) {
+    protected ListingRequestBuilder(OAuthFlow authManager) {
         this.authManager = authManager;
     }
 
     //================================================================================
-    // API Implementation
+    // Abstract Methods
     //================================================================================
-    public User getUser(String username) {
-        String url = ApiEndpoints.USER.toStringRaw().formatted(username);
-        User user = GsonInstance.gson().fromJson(authManager.get(url), User.class);
-        return userExists(user) ? user : null;
+    protected abstract String buildRequestURL(UserListType type, String parameters);
+    public abstract UserList next() throws Exception;
+    public abstract UserList previous() throws Exception;
+    public abstract UserList next(UserList userList) throws Exception;
+    public abstract UserList previous(UserList userList) throws Exception;
+    public abstract ListingRequestBuilder<T> setLimit(int limit);
+
+    //================================================================================
+    // Methods
+    //================================================================================
+    public ListingCache<T> cache() {
+        return cache;
     }
 
-    public boolean userExists(User user) {
-        return user.getUsername() != null;
+    public int getCount() {
+        return count;
     }
 
-    public boolean userExists(String username) {
-        User user = getUser(username);
-        return userExists(user);
+    protected void updateCount(int toAdd) {
+        this.count += toAdd;
     }
 }

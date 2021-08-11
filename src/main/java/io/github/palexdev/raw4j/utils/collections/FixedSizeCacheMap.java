@@ -16,41 +16,37 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.api;
+package io.github.palexdev.raw4j.utils.collections;
 
-import io.github.palexdev.raw4j.data.User;
-import io.github.palexdev.raw4j.enums.ApiEndpoints;
-import io.github.palexdev.raw4j.json.GsonInstance;
-import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public class UserApi {
+public class FixedSizeCacheMap<K, V> extends LinkedHashMap<K, V> {
     //================================================================================
     // Properties
     //================================================================================
-    private final OAuthFlow authManager;
+    private int maxSize;
 
     //================================================================================
     // Constructors
     //================================================================================
-    UserApi(OAuthFlow authManager) {
-        this.authManager = authManager;
+    public FixedSizeCacheMap(int maxSize) {
+        super(maxSize + 2, 1F);
+        this.maxSize = maxSize;
     }
 
     //================================================================================
-    // API Implementation
+    // Methods
     //================================================================================
-    public User getUser(String username) {
-        String url = ApiEndpoints.USER.toStringRaw().formatted(username);
-        User user = GsonInstance.gson().fromJson(authManager.get(url), User.class);
-        return userExists(user) ? user : null;
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
     }
 
-    public boolean userExists(User user) {
-        return user.getUsername() != null;
-    }
-
-    public boolean userExists(String username) {
-        User user = getUser(username);
-        return userExists(user);
+    //================================================================================
+    // Override Methods
+    //================================================================================
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        return size() > maxSize;
     }
 }

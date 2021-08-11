@@ -18,44 +18,47 @@
 
 package io.github.palexdev.raw4j.utils;
 
-import java.util.Random;
-
-public class StringUtils {
+public class NumberUtils {
 
     //================================================================================
     // Constructors
     //================================================================================
-    private StringUtils() {}
+    private NumberUtils() {}
 
     //================================================================================
     // Methods
     //================================================================================
-    public static String randomString(int length) {
-        Random random = new Random();
-        return random.ints(48, 122 + 1)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                .limit(length)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
+
+    /**
+     * Limits the given value to the given min-max range by returning the nearest bound
+     * if it exceeds or val if it's in range.
+     */
+    public static double clamp(double val, double min, double max) {
+        return Math.max(min, Math.min(max, val));
     }
 
     /**
-     * Replaces the last occurrence of the given string with a new string.
-     *
-     * @param string      The string to modify
-     * @param substring   The last occurrence to find
-     * @param replacement The replacement
-     * @return The modified string
+     * Limits the given value to the given min-max range by returning the nearest bound
+     * if it exceeds or val if it's in range.
      */
-    public static String replaceLast(String string, String substring, String replacement) {
-        int index = string.lastIndexOf(substring);
-        if (index == -1)
-            return string;
-        return string.substring(0, index) + replacement
-                + string.substring(index + substring.length());
+    public static float clamp(float val, float min, float max) {
+        return Math.max(min, Math.min(max, val));
     }
 
-    public static String checkString(String s, String returnS) {
-        return (s == null || s.isBlank()) ? returnS : "";
+    /**
+     * Limits the given value to the given min-max range by returning the nearest bound
+     * if it exceeds or val if it's in range.
+     */
+    public static int clamp(int val, int min, int max) {
+        return Math.max(min, Math.min(max, val));
     }
+
+    /**
+     * Limits the given value to the given min-max range by returning the nearest bound
+     * if it exceeds or val if it's in range.
+     */
+    public static long clamp(long val, long min, long max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
 }

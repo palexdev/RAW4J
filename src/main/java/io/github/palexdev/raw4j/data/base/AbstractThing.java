@@ -19,27 +19,28 @@
 package io.github.palexdev.raw4j.data.base;
 
 import com.google.gson.annotations.SerializedName;
-import io.github.palexdev.raw4j.json.JsonPathExpression;
+import io.github.palexdev.raw4j.enums.ThingType;
 
 public abstract class AbstractThing implements Thing {
     //================================================================================
     // Properties
     //================================================================================
-    @JsonPathExpression("data.id")
+    @SerializedName("kind")
+    private ThingType thingType;
+
     @SerializedName("id")
     private String id;
 
-    @JsonPathExpression("data.name")
-    @SerializedName("name")
-    private String name;
+    //================================================================================
+    // Getters
+    //================================================================================
+    @Override
+    public ThingType getType() {
+        return thingType;
+    }
 
     @Override
     public String getID() {
         return id;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 }

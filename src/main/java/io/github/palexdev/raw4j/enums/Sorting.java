@@ -16,16 +16,8 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.json;
+package io.github.palexdev.raw4j.enums;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-@Retention(RUNTIME)
-@Target({FIELD})
-public @interface JsonPathExpression {
-    String value();
+public enum Sorting {
+    ASCENDING, DESCENDING
 }

@@ -20,6 +20,12 @@ package io.github.palexdev.raw4j.enums;
 
 public enum ApiEndpoints {
     ME("/api/v1/me"),
+    ME_KARMA("/api/v1/me/karma"),
+    ME_PREFS("/api/v1/me/prefs"),
+    ME_TROPHIES("/api/v1/me/trophies"),
+    PREFS_FRIENDS("/api/v1/me/friends"),
+    PREFS_BLOCKED("/prefs/blocked"),
+    PREFS_TRUSTED("/prefs/trusted"),
     USER("/user/%s/about");
 
 

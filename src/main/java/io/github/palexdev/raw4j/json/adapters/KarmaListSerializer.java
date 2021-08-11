@@ -16,21 +16,25 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.oauth.base;
+package io.github.palexdev.raw4j.json.adapters;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.github.palexdev.raw4j.exception.OAuthException;
-import io.github.palexdev.raw4j.oauth.OAuthData;
-import io.github.palexdev.raw4j.oauth.OAuthInfo;
-import io.github.palexdev.raw4j.oauth.OAuthParameters;
-import okhttp3.RequestBody;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import io.github.palexdev.raw4j.data.KarmaList;
+import io.github.palexdev.raw4j.enums.ThingType;
 
-public interface OAuthFlow {
-    void authenticate() throws OAuthException;
-    JsonObject get(String url);
-    JsonObject patch(String url, RequestBody requestBody);
-    JsonObject post(String url, RequestBody requestBody);
-    OAuthInfo getAuthInfo();
-    OAuthData getAuthData();
-    OAuthParameters getParameters();
+import java.lang.reflect.Type;
+
+public class KarmaListSerializer implements JsonSerializer<KarmaList> {
+
+    @Override
+    public JsonElement serialize(KarmaList src, Type typeOfSrc, JsonSerializationContext context) {
+        JsonObject karmaListObject = new JsonObject();
+        karmaListObject.addProperty("kind", ThingType.KARMA_LIST.toString());
+        JsonElement subreddits = context.serialize(src.subreddits());
+        karmaListObject.add("data", subreddits);
+        return karmaListObject;
+    }
 }

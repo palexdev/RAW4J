@@ -1,25 +1,20 @@
 package io.github.palexdev.raw4j;
 
 import io.github.palexdev.raw4j.api.RedditClient;
-import io.github.palexdev.raw4j.data.User;
-import io.github.palexdev.raw4j.enums.LoginType;
-import io.github.palexdev.raw4j.enums.Scopes;
+import io.github.palexdev.raw4j.base.CommonTestProperties;
+import io.github.palexdev.raw4j.data.*;
+import io.github.palexdev.raw4j.enums.*;
+import io.github.palexdev.raw4j.json.GsonInstance;
 import io.github.palexdev.raw4j.oauth.OAuthParameters;
-import io.github.palexdev.raw4j.utils.ClientUtils;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.net.URL;
+import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AccountApiTest {
-    private final String host = "127.0.0.1";
-    private final int port = 8888;
-    private final URL redirectURI = ClientUtils.url("http", host, port, "/");
-    private final OAuthParameters parameters;
-    private RedditClient redditClient;
+public class AccountApiTest extends CommonTestProperties {
 
     public AccountApiTest() {
         parameters = new OAuthParameters.AuthCodeFlowBuilder()
@@ -44,27 +39,73 @@ public class AccountApiTest {
         User getMe = redditClient.api().accountApi().getMe();
         assertNotNull(getMe);
         assertNotNull(getMe.getName());
+        assertNull(getMe.getType());
     }
 
     @Test
-    public void testAboutUser1() {
-        User loggedUser = redditClient.api().accountApi().getLoggedUser();
-        assertNotNull(loggedUser);
-        assertTrue(loggedUser.getTotalKarma() > 0);
-        assertFalse(loggedUser.isFriend());
+    public void testKarmaList() {
+        KarmaList karmaList = redditClient.api().accountApi().getKarmaList().sorting().sortByTotalKarma().mode(Sorting.ASCENDING).sort();
+        assertTrue(TestUtils.isSorted(karmaList.subreddits(), Comparator.comparing(s -> (s.getLinkKarma() + s.getCommentKarma()))));
+        assertFalse(karmaList.subreddits().isEmpty());
+        assertEquals(33, karmaList.subreddits().size());
     }
 
     @Test
-    public void testAboutUser2() {
-        User loggedUser = redditClient.api().userApi().getUser("xiongchiamiov");
-        assertNotNull(loggedUser);
-        assertTrue(loggedUser.getTotalKarma() > 0);
-        assertFalse(loggedUser.isFriend());
+    public void testPrefs() {
+        Prefs prefs = redditClient.api().accountApi().getPrefs();
+        assertNotNull(prefs);
     }
 
     @Test
-    public void testAboutUser3() {
-        User loggedUser = redditClient.api().userApi().getUser("ThreeSixty405");
-        assertNull(loggedUser);
+    public void testTrophyList() {
+        TrophyList trophyList = redditClient.api().accountApi().getTrophyList();
+        assertEquals(ThingType.T6, trophyList.trophies().get(0).getType());
+        assertNotNull(trophyList.getType());
+        assertNull(trophyList.getID());
+        assertFalse(trophyList.trophies().isEmpty());
+        System.out.println(GsonInstance.gson().toJson(trophyList));
+    }
+
+    @Test
+    public void testBlocked() {
+        UserList blocked = redditClient.api().accountApi().userListRequestBuilder().get(UserListType.BLOCKED);
+        assertNotNull(blocked);
+        assertFalse(blocked.users().isEmpty());
+        assertEquals(UserListType.BLOCKED, blocked.getUserListType());
+        assertEquals(ThingType.USER_LIST, blocked.getType());
+        System.out.println(GsonInstance.gson().toJson(blocked));
+    }
+
+    @Test
+    public void testFriends() {
+        UserList friends = redditClient.api().accountApi().userListRequestBuilder().get(UserListType.FRIENDS);
+        assertNotNull(friends);
+        assertTrue(friends.users().isEmpty());
+        assertEquals(UserListType.FRIENDS, friends.getUserListType());
+        assertEquals(ThingType.USER_LIST, friends.getType());
+    }
+
+    @Test
+    public void testTrusted() {
+        UserList trusted = redditClient.api().accountApi().userListRequestBuilder().get(UserListType.TRUSTED);
+        assertNotNull(trusted);
+        assertTrue(trusted.users().isEmpty());
+        assertEquals(UserListType.TRUSTED, trusted.getUserListType());
+        assertEquals(ThingType.USER_LIST, trusted.getType());
+    }
+
+    @Test
+    public void testUpdatePrefs() {
+        Prefs initialPrefs = redditClient.api().accountApi().getPrefs();
+        Prefs prefs = redditClient.api().accountApi().updatePrefs()
+                .setVideoAutoplay(false)
+                .patch();
+        assertTrue(initialPrefs.isVideoAutoplay());
+        assertFalse(prefs.isVideoAutoplay());
+
+        Prefs reset = redditClient.api().accountApi().updatePrefs()
+                .setVideoAutoplay(true)
+                .patch();
+        assertTrue(reset.isVideoAutoplay());
     }
 }

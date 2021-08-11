@@ -18,7 +18,22 @@
 
 package io.github.palexdev.raw4j.data.base;
 
+import io.github.palexdev.raw4j.enums.ThingType;
+
 public interface Thing {
+
+    /**
+     * @return the "thing" type
+     */
+    ThingType getType();
+
+    /**
+     * @return the ID of the thing
+     */
     String getID();
+
+    /**
+     * @return the name of the thing (composed by the type + "_" + ID)
+     */
     String getName();
 }

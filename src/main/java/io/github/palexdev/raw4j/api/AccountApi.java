@@ -18,7 +18,8 @@
 
 package io.github.palexdev.raw4j.api;
 
-import io.github.palexdev.raw4j.data.User;
+import io.github.palexdev.raw4j.api.listing.UserListRequestBuilder;
+import io.github.palexdev.raw4j.data.*;
 import io.github.palexdev.raw4j.enums.ApiEndpoints;
 import io.github.palexdev.raw4j.json.GsonInstance;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
@@ -31,6 +32,7 @@ public class AccountApi {
     //================================================================================
     private static final Logger logger = LoggerFactory.getLogger(RedditApiWrapper.class.getSimpleName());
     private final OAuthFlow authManager;
+    private final UserListRequestBuilder userListRequestBuilder;
     private User loggedUser;
 
     //================================================================================
@@ -38,6 +40,7 @@ public class AccountApi {
     //================================================================================
     AccountApi(OAuthFlow authManager) {
         this.authManager = authManager;
+        this.userListRequestBuilder = new UserListRequestBuilder(authManager);
     }
 
     //================================================================================
@@ -50,7 +53,7 @@ public class AccountApi {
 
         if (!authManager.getAuthData().isValidUsername()) {
             User user = getMe();
-            authManager.getAuthData().setUsername(user.getName());
+            authManager.getAuthData().setUsername(user.getUsername());
         }
 
         String url = ApiEndpoints.USER.toStringRaw().formatted(authManager.getAuthData().getUsername());
@@ -61,6 +64,29 @@ public class AccountApi {
     public User getMe() {
         String url = ApiEndpoints.ME.toStringRaw();
         return GsonInstance.gson().fromJson(authManager.get(url), User.class);
+    }
+
+    public KarmaList getKarmaList() {
+        String url = ApiEndpoints.ME_KARMA.toStringRaw();
+        return GsonInstance.gson().fromJson(authManager.get(url), KarmaList.class);
+    }
+
+    public Prefs getPrefs() {
+        String url = ApiEndpoints.ME_PREFS.toStringRaw();
+        return GsonInstance.gson().fromJson(authManager.get(url), Prefs.class);
+    }
+
+    public TrophyList getTrophyList() {
+        String url = ApiEndpoints.ME_TROPHIES.toStringRaw();
+        return GsonInstance.gson().fromJson(authManager.get(url), TrophyList.class);
+    }
+
+    public PrefsUpdater updatePrefs() {
+        return new PrefsUpdater(authManager);
+    }
+
+    public UserListRequestBuilder userListRequestBuilder() {
+        return userListRequestBuilder;
     }
 
     public AccountApi refreshLoggedUser() {

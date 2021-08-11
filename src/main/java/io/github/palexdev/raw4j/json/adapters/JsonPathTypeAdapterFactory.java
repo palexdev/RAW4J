@@ -16,7 +16,7 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.json;
+package io.github.palexdev.raw4j.json.adapters;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -27,6 +27,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -52,7 +53,7 @@ public final class JsonPathTypeAdapterFactory implements TypeAdapterFactory {
     //================================================================================
     // Getters
     //================================================================================
-    static TypeAdapterFactory getJsonPathTypeAdapterFactory() {
+    public static TypeAdapterFactory getJsonPathTypeAdapterFactory() {
         return jsonPathTypeAdapterFactory;
     }
 
@@ -94,7 +95,7 @@ public final class JsonPathTypeAdapterFactory implements TypeAdapterFactory {
             for (final FieldInfo fieldInfo : fieldInfos) {
                 try {
                     final JsonElement innerJsonElement = fieldInfo.jsonPath.read(outerJsonElement);
-                    final Object innerValue = gson.fromJson(innerJsonElement, fieldInfo.field.getType());
+                    final Object innerValue = gson.fromJson(innerJsonElement, fieldInfo.field.getGenericType());
                     fieldInfo.field.set(value, innerValue);
                 } catch (final PathNotFoundException ignored) {
                 } catch (final IllegalAccessException ex) {
@@ -103,7 +104,6 @@ public final class JsonPathTypeAdapterFactory implements TypeAdapterFactory {
             }
             return value;
         }
-
     }
 
     private static final class FieldInfo {
@@ -127,7 +127,7 @@ public final class JsonPathTypeAdapterFactory implements TypeAdapterFactory {
                             .collect(Collectors.toList())
             );
 
-            if (clazz.getSuperclass() != null) {
+            if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class && clazz.getSuperclass() != Enum.class) {
                 of(fieldInfo, clazz.getSuperclass());
             }
 

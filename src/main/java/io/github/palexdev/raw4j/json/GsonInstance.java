@@ -26,6 +26,13 @@ import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 import com.jayway.jsonpath.spi.json.JsonProvider;
 import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 import com.jayway.jsonpath.spi.mapper.MappingProvider;
+import io.github.palexdev.raw4j.data.KarmaList;
+import io.github.palexdev.raw4j.data.TrophyList;
+import io.github.palexdev.raw4j.data.UserList;
+import io.github.palexdev.raw4j.json.adapters.JsonPathTypeAdapterFactory;
+import io.github.palexdev.raw4j.json.adapters.KarmaListSerializer;
+import io.github.palexdev.raw4j.json.adapters.TrophyListSerializer;
+import io.github.palexdev.raw4j.json.adapters.UserListSerializer;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -41,11 +48,13 @@ public class GsonInstance {
     //================================================================================
     static {
         gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .serializeNulls()
                 .addSerializationExclusionStrategy(OAuthInfoExclusionStrategy.instance())
+                .disableHtmlEscaping()
+                .registerTypeAdapter(KarmaList.class, new KarmaListSerializer())
+                .registerTypeAdapter(TrophyList.class, new TrophyListSerializer())
+                .registerTypeAdapter(UserList.class, new UserListSerializer())
                 .registerTypeAdapterFactory(JsonPathTypeAdapterFactory.getJsonPathTypeAdapterFactory())
+                .setPrettyPrinting()
                 .create();
 
         final JsonProvider jsonProvider = new GsonJsonProvider(gson);

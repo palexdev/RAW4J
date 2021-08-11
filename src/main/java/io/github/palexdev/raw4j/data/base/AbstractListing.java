@@ -16,41 +16,41 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.api;
+package io.github.palexdev.raw4j.data.base;
 
-import io.github.palexdev.raw4j.data.User;
-import io.github.palexdev.raw4j.enums.ApiEndpoints;
-import io.github.palexdev.raw4j.json.GsonInstance;
-import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
+import com.google.gson.annotations.SerializedName;
+import io.github.palexdev.raw4j.enums.ThingType;
+import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
 
-public class UserApi {
+public abstract class AbstractListing implements Listing {
     //================================================================================
     // Properties
     //================================================================================
-    private final OAuthFlow authManager;
+    @JsonPathExpression("kind")
+    @SerializedName("kind")
+    private ThingType type;
+
+    @JsonPathExpression("data.after")
+    private String after;
+
+    @JsonPathExpression("data.before")
+    private String before;
 
     //================================================================================
-    // Constructors
+    // Getters
     //================================================================================
-    UserApi(OAuthFlow authManager) {
-        this.authManager = authManager;
+    @Override
+    public ThingType getType() {
+        return type;
     }
 
-    //================================================================================
-    // API Implementation
-    //================================================================================
-    public User getUser(String username) {
-        String url = ApiEndpoints.USER.toStringRaw().formatted(username);
-        User user = GsonInstance.gson().fromJson(authManager.get(url), User.class);
-        return userExists(user) ? user : null;
+    @Override
+    public String getAfter() {
+        return after;
     }
 
-    public boolean userExists(User user) {
-        return user.getUsername() != null;
-    }
-
-    public boolean userExists(String username) {
-        User user = getUser(username);
-        return userExists(user);
+    @Override
+    public String getBefore() {
+        return before;
     }
 }

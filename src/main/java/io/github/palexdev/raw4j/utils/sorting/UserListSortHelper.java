@@ -16,41 +16,56 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.api;
+package io.github.palexdev.raw4j.utils.sorting;
 
-import io.github.palexdev.raw4j.data.User;
-import io.github.palexdev.raw4j.enums.ApiEndpoints;
-import io.github.palexdev.raw4j.json.GsonInstance;
-import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
+import io.github.palexdev.raw4j.data.UserList;
+import io.github.palexdev.raw4j.data.UserList.ListingUser;
+import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 
-public class UserApi {
+import java.util.Comparator;
+import java.util.List;
+
+public class UserListSortHelper extends AbstractSortingHelper<UserList, ListingUser> {
     //================================================================================
     // Properties
     //================================================================================
-    private final OAuthFlow authManager;
+    private final UserList userList;
 
     //================================================================================
     // Constructors
     //================================================================================
-    UserApi(OAuthFlow authManager) {
-        this.authManager = authManager;
+    public UserListSortHelper(UserList userList) {
+        this.userList = userList;
     }
 
     //================================================================================
-    // API Implementation
+    // Methods
     //================================================================================
-    public User getUser(String username) {
-        String url = ApiEndpoints.USER.toStringRaw().formatted(username);
-        User user = GsonInstance.gson().fromJson(authManager.get(url), User.class);
-        return userExists(user) ? user : null;
+    public UserListSortHelper sortByName() {
+        sortBy(Comparator.comparing(ListingUser::getName));
+        return this;
     }
 
-    public boolean userExists(User user) {
-        return user.getUsername() != null;
+    public UserListSortHelper sortByTime() {
+        sortBy(Comparator.comparing(ListingUser::getDate));
+        return this;
     }
 
-    public boolean userExists(String username) {
-        User user = getUser(username);
-        return userExists(user);
+    //================================================================================
+    // Override Methods
+    //================================================================================
+    @Override
+    public UserList sort() {
+        if (getList() == null) {
+            return userList;
+        }
+
+        getList().sort(comparator);
+        return userList;
+    }
+
+    @Override
+    public List<ListingUser> getList() {
+        return userList.users();
     }
 }

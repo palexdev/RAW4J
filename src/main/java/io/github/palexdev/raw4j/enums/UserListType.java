@@ -16,21 +16,10 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.oauth.base;
+package io.github.palexdev.raw4j.enums;
 
-import com.google.gson.JsonObject;
-import io.github.palexdev.raw4j.exception.OAuthException;
-import io.github.palexdev.raw4j.oauth.OAuthData;
-import io.github.palexdev.raw4j.oauth.OAuthInfo;
-import io.github.palexdev.raw4j.oauth.OAuthParameters;
-import okhttp3.RequestBody;
-
-public interface OAuthFlow {
-    void authenticate() throws OAuthException;
-    JsonObject get(String url);
-    JsonObject patch(String url, RequestBody requestBody);
-    JsonObject post(String url, RequestBody requestBody);
-    OAuthInfo getAuthInfo();
-    OAuthData getAuthData();
-    OAuthParameters getParameters();
+public enum UserListType {
+    BLOCKED,
+    FRIENDS,
+    TRUSTED
 }

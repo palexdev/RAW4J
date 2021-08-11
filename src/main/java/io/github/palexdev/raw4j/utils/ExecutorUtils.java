@@ -16,41 +16,32 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.api;
+package io.github.palexdev.raw4j.utils;
 
-import io.github.palexdev.raw4j.data.User;
-import io.github.palexdev.raw4j.enums.ApiEndpoints;
-import io.github.palexdev.raw4j.json.GsonInstance;
-import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
-public class UserApi {
+public class ExecutorUtils {
     //================================================================================
     // Properties
     //================================================================================
-    private final OAuthFlow authManager;
+    private static final ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(1, r -> {
+        Thread thread = Executors.defaultThreadFactory().newThread(r);
+        thread.setName("RAW4J - ScheduledExecutor");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     //================================================================================
     // Constructors
     //================================================================================
-    UserApi(OAuthFlow authManager) {
-        this.authManager = authManager;
-    }
+    private ExecutorUtils() {}
 
     //================================================================================
-    // API Implementation
+    // Methods
     //================================================================================
-    public User getUser(String username) {
-        String url = ApiEndpoints.USER.toStringRaw().formatted(username);
-        User user = GsonInstance.gson().fromJson(authManager.get(url), User.class);
-        return userExists(user) ? user : null;
+    public static ScheduledExecutorService scheduled() {
+        return scheduled;
     }
 
-    public boolean userExists(User user) {
-        return user.getUsername() != null;
-    }
-
-    public boolean userExists(String username) {
-        User user = getUser(username);
-        return userExists(user);
-    }
 }
