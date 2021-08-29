@@ -20,6 +20,8 @@ package io.github.palexdev.raw4j.data.base;
 
 import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.enums.ThingType;
+import io.github.palexdev.raw4j.json.annotations.IgnoreWrap;
+import io.github.palexdev.raw4j.json.annotations.Wrapped;
 
 /**
  * This is the base class for all {@code Things}.
@@ -31,11 +33,13 @@ import io.github.palexdev.raw4j.enums.ThingType;
  * <p></p>
  * Implements {@link Thing}
  */
+@Wrapped("data")
 public abstract class AbstractThing implements Thing {
     //================================================================================
     // Properties
     //================================================================================
     @SerializedName("kind")
+    @IgnoreWrap
     private ThingType thingType;
 
     @SerializedName("id")

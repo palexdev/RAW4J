@@ -16,7 +16,7 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.enums;
+package io.github.palexdev.raw4j.enums.endpoints;
 
 /**
  * Enumeration for all the Reddit OAuth URLs.

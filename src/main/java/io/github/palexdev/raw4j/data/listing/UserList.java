@@ -16,47 +16,62 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.data;
+package io.github.palexdev.raw4j.data.listing;
 
 import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.data.base.AbstractListing;
 import io.github.palexdev.raw4j.data.base.Listing;
 import io.github.palexdev.raw4j.enums.UserListType;
-import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
+import io.github.palexdev.raw4j.json.annotations.Wrapped;
+import io.github.palexdev.raw4j.utils.filtering.UserListFilterHelper;
+import io.github.palexdev.raw4j.utils.filtering.base.Filterable;
 import io.github.palexdev.raw4j.utils.sorting.UserListSortHelper;
-import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 import io.github.palexdev.raw4j.utils.sorting.base.Sortable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This data structure represents a {@link Listing} of type {@link UserListType}.
  * <p></p>
  * This class offers info about friends, blocked and trusted users.
+ * <p></p>
+ * Implements {@link Filterable} and {@link Sortable}.
  */
-public class UserList extends AbstractListing implements Sortable {
+@Wrapped("data")
+public class UserList extends AbstractListing implements Filterable, Sortable {
     //================================================================================
     // Properties
     //================================================================================
-    private transient final UserListSortHelper helper = new UserListSortHelper(this);
+    private transient final UserListFilterHelper filterHelper = UserListFilterHelper.filtering(this);
+    private transient final UserListSortHelper sortHelper = UserListSortHelper.sorting(this);
     private transient UserListType userListType;
 
-    @JsonPathExpression("data.children")
     @SerializedName("children")
-    private final List<ListingUser> listingUsers = new ArrayList<>();
+    private List<ListingUser> listingUsers;
 
     //================================================================================
     // Methods
     //================================================================================
 
     /**
-     * @return the instance of the {@link AbstractSortingHelper} to sort the list users
+     * @return the instance of the {@link UserListFilterHelper} to filter the list of users
+     */
+    @Override
+    public UserListFilterHelper filtering() {
+        return filterHelper;
+    }
+
+    /**
+     * @return the instance of the {@link UserListSortHelper} to sort the list of users
      */
     @Override
     public UserListSortHelper sorting() {
-        return helper;
+        return sortHelper;
     }
+
+    //================================================================================
+    // Getters, Setters
+    //================================================================================
 
     /**
      * @return the list of users
@@ -66,20 +81,17 @@ public class UserList extends AbstractListing implements Sortable {
         return listingUsers;
     }
 
-    //================================================================================
-    // Getters, Setters
-    //================================================================================
-
     /**
      * @return the type of this UserList
+     * @see UserListType
      */
     public UserListType getUserListType() {
         return userListType;
     }
 
     /**
-     * Sets this UserList type. Since this property is not coming from Reddit but rather
-     * on the RAW4J side to avoid code duplication after that the UserList has been retrieved
+     * Sets this UserList type. Since this property is not coming from Reddit, but rather
+     * on the RAW4J side, to avoid code duplication, after the UserList has been retrieved
      * from the server it's needed to set its type. This is done automatically by RAW4J, any
      * subsequent call of this method won't have any effect.
      */
@@ -104,7 +116,7 @@ public class UserList extends AbstractListing implements Sortable {
         //================================================================================
         // Properties
         //================================================================================
-        private String date;
+        private Long date;
         private String id;
         private String name;
 
@@ -114,7 +126,7 @@ public class UserList extends AbstractListing implements Sortable {
         //================================================================================
         // Getters
         //================================================================================
-        public String getDate() {
+        public Long getDate() {
             return date;
         }
 

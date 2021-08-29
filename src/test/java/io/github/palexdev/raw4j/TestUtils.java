@@ -18,7 +18,6 @@
 
 package io.github.palexdev.raw4j;
 
-import io.github.palexdev.raw4j.json.GsonInstance;
 import io.github.palexdev.raw4j.oauth.OAuthInfo;
 
 import java.io.FileReader;
@@ -30,6 +29,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import static io.github.palexdev.raw4j.json.GsonInstance.fromJson;
+import static io.github.palexdev.raw4j.json.GsonInstance.toJson;
+
 public class TestUtils {
     private static final Path tokenFileStore = Path.of(System.getProperty("user.home") + "/Desktop/ReddStoredToken.json");
     private static final Path tokenFileStore2 = Path.of(System.getProperty("user.home") + "/Desktop/RedditStoredToken2.json");
@@ -38,7 +40,7 @@ public class TestUtils {
 
     public static void storeAuthInfo(OAuthInfo authInfo) {
         try {
-            String toWrite = GsonInstance.gson().toJson(authInfo);
+            String toWrite = toJson(authInfo);
             if (!Files.exists(tokenFileStore)) {
                 Files.createFile(tokenFileStore);
             }
@@ -52,7 +54,7 @@ public class TestUtils {
         OAuthInfo authInfo = null;
 
         try (FileReader reader = new FileReader(tokenFileStore.toFile())) {
-            authInfo = GsonInstance.gson().fromJson(reader, OAuthInfo.class);
+            authInfo = fromJson(reader, OAuthInfo.class);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -61,7 +63,7 @@ public class TestUtils {
 
     public static void storeAuthInfo2(OAuthInfo authInfo) {
         try {
-            String toWrite = GsonInstance.gson().toJson(authInfo);
+            String toWrite = toJson(authInfo);
             if (!Files.exists(tokenFileStore2)) {
                 Files.createFile(tokenFileStore2);
             }
@@ -75,7 +77,7 @@ public class TestUtils {
         OAuthInfo authInfo = null;
 
         try (FileReader reader = new FileReader(tokenFileStore2.toFile())) {
-            authInfo = GsonInstance.gson().fromJson(reader, OAuthInfo.class);
+            authInfo = fromJson(reader, OAuthInfo.class);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -18,14 +18,13 @@
 
 package io.github.palexdev.raw4j.oauth;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import io.github.palexdev.raw4j.enums.Scopes;
-import io.github.palexdev.raw4j.enums.URLEnum;
+import io.github.palexdev.raw4j.enums.endpoints.URLEnum;
 import io.github.palexdev.raw4j.exception.OAuthException;
-import io.github.palexdev.raw4j.json.GsonInstance;
 import io.github.palexdev.raw4j.oauth.base.AbstractOAuthFlow;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 import io.github.palexdev.raw4j.utils.StringUtils;
@@ -42,6 +41,8 @@ import java.time.Instant;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
+
+import static io.github.palexdev.raw4j.json.GsonInstance.fromJson;
 
 /**
  * OAuthFlow for Web Apps and Installed Apps that have a logged-in user.
@@ -129,8 +130,8 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
                 .add("redirect_uri", parameters.getRedirectURI().toString())
                 .build();
 
-        JsonObject response = post(URLEnum.OAUTH_TOKEN_URL.toString(), requestBody);
-        authInfo = GsonInstance.gson().fromJson(response, OAuthInfo.class);
+        JsonElement response = post(URLEnum.OAUTH_TOKEN_URL.toString(), requestBody);
+        authInfo = fromJson(response, OAuthInfo.class);
         authInfo.setExpireTime(Instant.now().getEpochSecond() + authInfo.getExpiresIn() - getExpireSecondsOffset());
         if (!authInfo.isValid()) {
             throw new OAuthException("Invalid AuthInfo, check that the specified client parameters are correct");
@@ -165,8 +166,8 @@ public class OAuthAuthorizationCodeFlow extends AbstractOAuthFlow {
                 .add("refresh_token", refreshToken)
                 .build();
 
-        JsonObject response = post(URLEnum.OAUTH_TOKEN_URL.toString(), requestBody);
-        authInfo = GsonInstance.gson().fromJson(response, OAuthInfo.class);
+        JsonElement response = post(URLEnum.OAUTH_TOKEN_URL.toString(), requestBody);
+        authInfo = fromJson(response, OAuthInfo.class);
         authInfo.setExpireTime(Instant.now().getEpochSecond() + authInfo.getExpiresIn() - getExpireSecondsOffset());
         authInfo.setRefreshToken(refreshToken);
         authInfo.setPermanent(parameters.isPermanent());

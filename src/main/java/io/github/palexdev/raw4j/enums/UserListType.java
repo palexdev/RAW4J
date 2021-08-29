@@ -18,7 +18,7 @@
 
 package io.github.palexdev.raw4j.enums;
 
-import io.github.palexdev.raw4j.data.UserList;
+import io.github.palexdev.raw4j.data.listing.UserList;
 
 /**
  * Enumeration for the various {@link UserList} types.

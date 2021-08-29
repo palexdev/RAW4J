@@ -18,8 +18,8 @@
 
 package io.github.palexdev.raw4j.utils.sorting;
 
-import io.github.palexdev.raw4j.data.KarmaList;
-import io.github.palexdev.raw4j.data.KarmaList.KarmaListSubreddit;
+import io.github.palexdev.raw4j.data.listing.KarmaList;
+import io.github.palexdev.raw4j.data.listing.KarmaList.KarmaListSubreddit;
 import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 
 import java.util.Comparator;
@@ -41,44 +41,40 @@ public class KarmaListSortHelper extends AbstractSortingHelper<KarmaList, KarmaL
         this.karmaList = karmaList;
     }
 
+    public static KarmaListSortHelper sorting(KarmaList karmaList) {
+        return new KarmaListSortHelper(karmaList);
+    }
+
+    //================================================================================
+    // Comparators
+    //================================================================================
+
+    /**
+     * @return a comparator that sorts the karma list by subreddit name
+     */
+    public static Comparator<KarmaListSubreddit> sortByName() {
+        return Comparator.comparing(KarmaListSubreddit::getName);
+    }
+
+    /**
+     * @return a comparator that sorts the karma list by total karma
+     */
+    public static Comparator<KarmaListSubreddit> sortByTotalKarma() {
+        return Comparator.comparing(KarmaListSubreddit::getTotalKarma);
+    }
+
     //================================================================================
     // Methods
     //================================================================================
 
     /**
-     * Sets the comparator to one that sorts by {@link KarmaListSubreddit#getName()}
-     * <p>
-     * To confirm the sort call {@link #sort()}
-     */
-    public KarmaListSortHelper sortByName() {
-        sortBy(Comparator.comparing(KarmaListSubreddit::getName));
-        return this;
-    }
-
-    /**
-     * Sets the comparator to one that sorts by the sum of {@link KarmaListSubreddit#getLinkKarma()} and {@link KarmaListSubreddit#getCommentKarma()}.
-     * <p>
-     * To confirm the sort call {@link #sort()}
-     */
-    public KarmaListSortHelper sortByTotalKarma() {
-        sortBy(Comparator.comparing(s -> s.getLinkKarma() + s.getCommentKarma()));
-        return this;
-    }
-
-    //================================================================================
-    // Override Methods
-    //================================================================================
-
-    /**
-     * Sorts the list with the built comparator.
+     * {@inheritDoc}
      */
     @Override
     public KarmaList sort() {
-        if (getList() == null) {
-            return karmaList;
+        if (getList() != null) {
+            getList().sort(comparator);
         }
-
-        getList().sort(comparator);
         return karmaList;
     }
 

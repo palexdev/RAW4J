@@ -21,7 +21,6 @@ package io.github.palexdev.raw4j.oauth.base;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import io.github.palexdev.raw4j.exception.OAuthException;
-import io.github.palexdev.raw4j.json.GsonInstance;
 import io.github.palexdev.raw4j.oauth.OAuthData;
 import io.github.palexdev.raw4j.oauth.OAuthInfo;
 import io.github.palexdev.raw4j.oauth.OAuthParameters;
@@ -30,6 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+
+import static io.github.palexdev.raw4j.json.GsonInstance.fromJson;
 
 /**
  * This is the base class of all OAuth flows, implements {@link OAuthFlow}.
@@ -43,6 +44,7 @@ import java.io.IOException;
  * <p></p>
  * Defines three abstract methods to: retrieve the access token, refresh the token, revoke a token.
  */
+@SuppressWarnings("ConstantConditions")
 public abstract class AbstractOAuthFlow implements OAuthFlow {
     //================================================================================
     // Properties
@@ -105,6 +107,29 @@ public abstract class AbstractOAuthFlow implements OAuthFlow {
     //================================================================================
     // Override Methods
     //================================================================================
+    @Override
+    public JsonObject delete(String url) {
+        JsonObject object = null;
+        String responseBody = "";
+        try {
+            Request request = new Request.Builder()
+                    .header("Authorization", "Bearer " + authInfo.getAccessToken())
+                    .url(url)
+                    .delete()
+                    .build();
+            Call call = postClient.newCall(request);
+            Response response = call.execute();
+            responseBody = response.body().string();
+            object = fromJson(responseBody, JsonObject.class);
+        } catch (IOException ex) {
+            logger.error("POST failed for: [" + url + "]");
+            logger.error("Body was: \n" + responseBody);
+            logger.error("Exception was: ");
+            ex.printStackTrace();
+        }
+        return object;
+    }
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public JsonObject get(String url) {
@@ -123,7 +148,7 @@ public abstract class AbstractOAuthFlow implements OAuthFlow {
             Call call = getClient.newCall(request);
             Response response = call.execute();
             responseBody = response.body().string();
-            object = GsonInstance.gson().fromJson(responseBody, JsonObject.class);
+            object = fromJson(responseBody, JsonObject.class);
         } catch (IOException ex) {
             logger.error("GET failed for: [" + url + "]");
             logger.error("Body was: \n" + responseBody);
@@ -131,6 +156,33 @@ public abstract class AbstractOAuthFlow implements OAuthFlow {
             ex.printStackTrace();
         }
         return object;
+    }
+
+    @Override
+    public Boolean getBoolean(String url) {
+        Boolean bool = null;
+        String responseBody = "";
+        try {
+            if (!authInfo.isValid()) {
+                refreshToken();
+            }
+
+            Request request = new Request.Builder()
+                    .header("User-Agent", parameters.getUserAgent())
+                    .header("Authorization", "Bearer " + authInfo.getAccessToken())
+                    .url(url)
+                    .build();
+            Call call = getClient.newCall(request);
+            Response response = call.execute();
+            responseBody = response.body().string();
+            bool = Boolean.parseBoolean(responseBody);
+        } catch (IOException ex) {
+            logger.error("GET failed for: [" + url + "]");
+            logger.error("Body was: \n" + responseBody);
+            logger.error("Exception was: ");
+            ex.printStackTrace();
+        }
+        return bool;
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -152,7 +204,7 @@ public abstract class AbstractOAuthFlow implements OAuthFlow {
             Call call = postClient.newCall(request);
             Response response = call.execute();
             responseBody = response.body().string();
-            object = GsonInstance.gson().fromJson(responseBody, JsonObject.class);
+            object = fromJson(responseBody, JsonObject.class);
         } catch (JsonSyntaxException | IOException ex) {
             logger.error("PATCH failed for: [" + url + "]");
             logger.error("Body was: \n" + responseBody);
@@ -162,20 +214,45 @@ public abstract class AbstractOAuthFlow implements OAuthFlow {
         return object;
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public JsonObject post(String url, RequestBody requestBody) {
         JsonObject object = null;
         String responseBody = "";
         try {
-            Request request = new Request.Builder()
+            Request.Builder requestBuilder = new Request.Builder()
                     .url(url)
-                    .post(requestBody)
+                    .post(requestBody);
+            if (authInfo != null) {
+                requestBuilder.header("Authorization", "Bearer " + authInfo.getAccessToken());
+            }
+            Request request = requestBuilder.build();
+            Call call = postClient.newCall(request);
+            Response response = call.execute();
+            responseBody = response.body().string();
+            object = fromJson(responseBody, JsonObject.class);
+        } catch (IOException ex) {
+            logger.error("POST failed for: [" + url + "]");
+            logger.error("Body was: \n" + responseBody);
+            logger.error("Exception was: ");
+            ex.printStackTrace();
+        }
+        return object;
+    }
+
+    @Override
+    public JsonObject put(String url, RequestBody requestBody) {
+        JsonObject object = null;
+        String responseBody = "";
+        try {
+            Request request = new Request.Builder()
+                    .header("Authorization", "Bearer " + authInfo.getAccessToken())
+                    .url(url)
+                    .put(requestBody)
                     .build();
             Call call = postClient.newCall(request);
             Response response = call.execute();
             responseBody = response.body().string();
-            object = GsonInstance.gson().fromJson(responseBody, JsonObject.class);
+            object = fromJson(responseBody, JsonObject.class);
         } catch (IOException ex) {
             logger.error("POST failed for: [" + url + "]");
             logger.error("Body was: \n" + responseBody);

@@ -18,10 +18,9 @@
 
 package io.github.palexdev.raw4j.oauth;
 
-import com.google.gson.JsonObject;
-import io.github.palexdev.raw4j.enums.URLEnum;
+import com.google.gson.JsonElement;
+import io.github.palexdev.raw4j.enums.endpoints.URLEnum;
 import io.github.palexdev.raw4j.exception.OAuthException;
-import io.github.palexdev.raw4j.json.GsonInstance;
 import io.github.palexdev.raw4j.oauth.base.AbstractOAuthFlow;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 import okhttp3.FormBody;
@@ -29,6 +28,8 @@ import okhttp3.RequestBody;
 
 import java.time.Instant;
 import java.util.UUID;
+
+import static io.github.palexdev.raw4j.json.GsonInstance.fromJson;
 
 /**
  * OAuthFlow for Web Apps and Installed Apps that do not need a logged-in user.
@@ -99,8 +100,8 @@ public class OAuthAppOnlyFlow extends OAuthAuthorizationCodeFlow {
                 .build();
 
         String url = URLEnum.OAUTH_TOKEN_URL + (parameters.isPermanent() ? "?duration=permanent" : "");
-        JsonObject response = post(url, requestBody);
-        authInfo = GsonInstance.gson().fromJson(response, OAuthInfo.class);
+        JsonElement response = post(url, requestBody);
+        authInfo = fromJson(response, OAuthInfo.class);
         authInfo.setExpireTime(Instant.now().getEpochSecond() + authInfo.getExpiresIn() - getExpireSecondsOffset());
         if (!authInfo.isValid()) {
             throw new OAuthException("Invalid AuthInfo, check that the specified client parameters are correct");

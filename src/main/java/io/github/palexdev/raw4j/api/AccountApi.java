@@ -19,13 +19,22 @@
 package io.github.palexdev.raw4j.api;
 
 import io.github.palexdev.raw4j.api.listing.UserListRequestBuilder;
-import io.github.palexdev.raw4j.data.*;
-import io.github.palexdev.raw4j.enums.ApiEndpoints;
+import io.github.palexdev.raw4j.data.Prefs;
+import io.github.palexdev.raw4j.data.PrefsUpdater;
+import io.github.palexdev.raw4j.data.User;
+import io.github.palexdev.raw4j.data.listing.KarmaList;
+import io.github.palexdev.raw4j.data.listing.TrophyList;
+import io.github.palexdev.raw4j.data.listing.UserList;
 import io.github.palexdev.raw4j.enums.ThingType;
-import io.github.palexdev.raw4j.json.GsonInstance;
+import io.github.palexdev.raw4j.enums.UserListType;
+import io.github.palexdev.raw4j.enums.endpoints.AccountEndpoints;
+import io.github.palexdev.raw4j.enums.endpoints.UserEndpoints;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
+import io.github.palexdev.raw4j.utils.iterators.ListingIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static io.github.palexdev.raw4j.json.GsonInstance.fromJson;
 
 /**
  * This class contains all methods to interact with Account APIs.
@@ -39,15 +48,13 @@ public class AccountApi {
     //================================================================================
     private static final Logger logger = LoggerFactory.getLogger(RedditApiWrapper.class.getSimpleName()); // TODO remove?
     private final OAuthFlow authManager;
-    private final UserListRequestBuilder userListRequestBuilder;
     private User loggedUser;
 
     //================================================================================
     // Constructors
     //================================================================================
-    AccountApi(OAuthFlow authManager) {
-        this.authManager = authManager;
-        this.userListRequestBuilder = new UserListRequestBuilder(authManager);
+    AccountApi(RedditApiWrapper wrapper) {
+        this.authManager = wrapper.getAuthManager();
     }
 
     //================================================================================
@@ -77,8 +84,8 @@ public class AccountApi {
             authManager.getAuthData().setUsername(user.getUsername());
         }
 
-        String url = ApiEndpoints.USER.toStringRaw().formatted(authManager.getAuthData().getUsername());
-        loggedUser = GsonInstance.gson().fromJson(authManager.get(url), User.class);
+        String url = UserEndpoints.ABOUT.getFullEndpointRaw().formatted(authManager.getAuthData().getUsername());
+        loggedUser = fromJson(authManager.get(url), User.class);
         return loggedUser;
     }
 
@@ -86,8 +93,8 @@ public class AccountApi {
      * @return the {@link User} data structure of the logged user. This uses the {@code `/api/v1/me`} endpoint.
      */
     public User getMe() {
-        String url = ApiEndpoints.ME.toStringRaw();
-        return GsonInstance.gson().fromJson(authManager.get(url), User.class);
+        String url = AccountEndpoints.ME.getFullEndpointRaw();
+        return fromJson(authManager.get(url), User.class);
     }
 
     /**
@@ -95,16 +102,16 @@ public class AccountApi {
      * @see KarmaList
      */
     public KarmaList getKarmaList() {
-        String url = ApiEndpoints.ME_KARMA.toStringRaw();
-        return GsonInstance.gson().fromJson(authManager.get(url), KarmaList.class);
+        String url = AccountEndpoints.ME_KARMA.getFullEndpointRaw();
+        return fromJson(authManager.get(url), KarmaList.class);
     }
 
     /**
      * @return the settings list of the logged user.
      */
     public Prefs getPrefs() {
-        String url = ApiEndpoints.ME_PREFS.toStringRaw();
-        return GsonInstance.gson().fromJson(authManager.get(url), Prefs.class);
+        String url = AccountEndpoints.ME_PREFS.getFullEndpointRaw();
+        return fromJson(authManager.get(url), Prefs.class);
     }
 
     /**
@@ -112,8 +119,8 @@ public class AccountApi {
      * @see TrophyList
      */
     public TrophyList getTrophyList() {
-        String url = ApiEndpoints.ME_TROPHIES.toStringRaw();
-        return GsonInstance.gson().fromJson(authManager.get(url), TrophyList.class);
+        String url = AccountEndpoints.ME_TROPHIES.getFullEndpointRaw();
+        return fromJson(authManager.get(url), TrophyList.class);
     }
 
     /**
@@ -124,19 +131,34 @@ public class AccountApi {
     }
 
     /**
-     * @return an instance of {@link UserListRequestBuilder} to get and navigate through {@link UserList}s
-     */
-    public UserListRequestBuilder userListRequestBuilder() {
-        return userListRequestBuilder;
-    }
-
-    /**
      * This method should be used only when it's needed to refresh the info related to the logged user, note that
      * this returns an instance of this class, to get the new refreshed info you must then call {@link #getLoggedUser()}
      */
     public AccountApi refreshLoggedUser() {
-        String url = ApiEndpoints.USER.toStringRaw().formatted(authManager.getAuthData().getUsername());
-        loggedUser = GsonInstance.gson().fromJson(authManager.get(url), User.class);
+        String url = UserEndpoints.ABOUT.getFullEndpointRaw().formatted(authManager.getAuthData().getUsername());
+        loggedUser = fromJson(authManager.get(url), User.class);
         return this;
+    }
+
+    //================================================================================
+    // Iterators
+    //================================================================================
+
+    /**
+     * @return a new iterator to iterate through {@link UserList} listings of the type.
+     */
+    public ListingIterator<UserList> userListIterator(UserListType type) {
+        return userListRequestBuilder(type).iterator();
+    }
+
+    //================================================================================
+    // Request Builders
+    //================================================================================
+
+    /**
+     * @return a new instance of {@link UserListRequestBuilder} for the given {@link UserListType}, to get and navigate through {@link UserList}s
+     */
+    public UserListRequestBuilder userListRequestBuilder(UserListType type) {
+        return new UserListRequestBuilder(authManager, type);
     }
 }

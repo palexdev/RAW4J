@@ -18,16 +18,18 @@
 
 package io.github.palexdev.raw4j.oauth;
 
-import com.google.gson.JsonObject;
-import io.github.palexdev.raw4j.enums.URLEnum;
+import com.google.gson.JsonElement;
+import io.github.palexdev.raw4j.enums.endpoints.URLEnum;
 import io.github.palexdev.raw4j.exception.OAuthException;
-import io.github.palexdev.raw4j.json.GsonInstance;
 import io.github.palexdev.raw4j.oauth.base.AbstractOAuthFlow;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 import java.time.Instant;
+
+import static io.github.palexdev.raw4j.json.GsonInstance.fromJson;
+import static io.github.palexdev.raw4j.json.GsonInstance.toJson;
 
 /**
  * OAuthFlow for Scripts.
@@ -69,10 +71,10 @@ public class OAuthScriptFlow extends AbstractOAuthFlow {
                 .add("password", authData.getPassword())
                 .build();
 
-        JsonObject response = post(URLEnum.OAUTH_TOKEN_URL.toString(), requestBody);
-        authInfo = GsonInstance.gson().fromJson(response, OAuthInfo.class);
+        JsonElement response = post(URLEnum.OAUTH_TOKEN_URL.toString(), requestBody);
+        authInfo = fromJson(response, OAuthInfo.class);
         if (response.toString().contains("invalid_grant")) {
-            throw new OAuthException("Response was: \n" + GsonInstance.gson().toJson(response) + "\nPlease check that the parameters are correct");
+            throw new OAuthException("Response was: \n" + toJson(response) + "\nPlease check that the parameters are correct");
         }
         authInfo.setExpireTime(Instant.now().getEpochSecond() + authInfo.getExpiresIn() - getExpireSecondsOffset());
         logger.debug("Token Retrieved");

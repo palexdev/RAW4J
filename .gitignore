@@ -9,4 +9,6 @@ out/
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
+RedditAPI_Doc
+src/test/resources/io/github/palexdev/raw4j/TestJson
 src/test/java/io/github/palexdev/raw4j/TestConfig.java

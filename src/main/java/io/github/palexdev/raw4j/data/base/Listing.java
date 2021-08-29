@@ -21,7 +21,10 @@ package io.github.palexdev.raw4j.data.base;
 import io.github.palexdev.raw4j.enums.ThingType;
 
 /**
- * Public API for all {@code Listings}
+ * Public API for all {@code Listings}.
+ * <p>
+ * According to Reddit documentation a listing is like a page that can show up to 100 items at a time.
+ * To navigate through pages they include two string properties, 'after' and 'before'.
  */
 public interface Listing {
 

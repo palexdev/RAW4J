@@ -80,7 +80,7 @@ public class RedditClient {
     //================================================================================
     public RedditClient(OAuthFlow authManager) {
         this.authManager = authManager;
-        apiWrapper = new RedditApiWrapper(authManager);
+        apiWrapper = new RedditApiWrapper(this);
     }
 
     //================================================================================
@@ -160,5 +160,27 @@ public class RedditClient {
      */
     public List<Scopes> getScopes() {
         return getAuthInfo().getScopes();
+    }
+
+    OAuthFlow getAuthManager() {
+        return authManager;
+    }
+
+    //================================================================================
+    // Delegate Methods
+    //================================================================================
+
+    /**
+     * @return an instance of {@link AccountApi} to use Account APIs
+     */
+    public AccountApi accountApi() {
+        return apiWrapper.accountApi();
+    }
+
+    /**
+     * @return an instance of {@link UserApi} to use User APIs
+     */
+    public UserApi userApi() {
+        return apiWrapper.userApi();
     }
 }

@@ -16,40 +16,29 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.enums;
+package io.github.palexdev.raw4j.enums.endpoints;
 
 /**
- * This enumerator contains all the Reddit API endpoints currently covered.
+ * Enumerator that specifies all the 'Account' endpoints, implements {@link Endpoints}.
  */
-public enum ApiEndpoints {
+public enum AccountEndpoints implements Endpoints {
     ME("/api/v1/me"),
     ME_KARMA("/api/v1/me/karma"),
     ME_PREFS("/api/v1/me/prefs"),
     ME_TROPHIES("/api/v1/me/trophies"),
     PREFS_FRIENDS("/api/v1/me/friends"),
     PREFS_BLOCKED("/prefs/blocked"),
-    PREFS_TRUSTED("/prefs/trusted"),
-    USER("/user/%s/about");
+    PREFS_TRUSTED("/prefs/trusted");
 
 
     private final String endpoint;
 
-    ApiEndpoints(String endpoint) {
+    AccountEndpoints(String endpoint) {
         this.endpoint = endpoint;
     }
 
-    /**
-     * @return the complete endpoint URL by prepending {@link URLEnum#OAUTH_API_BASE_URL}
-     */
     @Override
-    public String toString() {
-        return URLEnum.OAUTH_API_BASE_URL + endpoint;
-    }
-
-    /**
-     * @return the complete endpoint URL by prepending {@link URLEnum#OAUTH_API_BASE_URL} and adds '?raw_json=1' to the URL parameters
-     */
-    public String toStringRaw() {
-        return URLEnum.OAUTH_API_BASE_URL + endpoint + "?raw_json=1";
+    public String getEndpoint() {
+        return endpoint;
     }
 }

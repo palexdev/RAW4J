@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="RAW4J Test Logging" packages="">
+    <Appenders>
+        <Console name="stdout">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%-5level] [%logger{36}] - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="stdout"/>
+        </Root>
+    </Loggers>
+</Configuration>

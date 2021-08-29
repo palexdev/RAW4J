@@ -16,30 +16,34 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.data;
+package io.github.palexdev.raw4j.data.listing;
 
+import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.data.base.AbstractThing;
 import io.github.palexdev.raw4j.data.base.Thing;
 import io.github.palexdev.raw4j.enums.ThingType;
-import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
+import io.github.palexdev.raw4j.json.annotations.Wrapped;
+import io.github.palexdev.raw4j.utils.filtering.TrophyFilterHelper;
+import io.github.palexdev.raw4j.utils.filtering.base.Filterable;
 import io.github.palexdev.raw4j.utils.sorting.TrophyListSortHelper;
-import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 import io.github.palexdev.raw4j.utils.sorting.base.Sortable;
 
 import java.util.List;
 
 /**
- * Thing of type {@link ThingType#TROPHY_LIST}, implements {@link Sortable}, has empty name(not present in JSON).
+ * Thing of type {@link ThingType#TROPHY_LIST}, implements {@link Filterable} and {@link Sortable}, has empty name(not present in JSON).
  * <p></p>
  * This class gives a list of the curren user's trophies.
  */
-public class TrophyList extends AbstractThing implements Sortable {
+@Wrapped("data")
+public class TrophyList extends AbstractThing implements Filterable, Sortable {
     //================================================================================
     // Properties
     //================================================================================
-    private transient final TrophyListSortHelper helper = new TrophyListSortHelper(this);
+    private transient final TrophyFilterHelper filterHelper = TrophyFilterHelper.filtering(this);
+    private transient final TrophyListSortHelper sortHelper = TrophyListSortHelper.sorting(this);
 
-    @JsonPathExpression("data.trophies")
+    @SerializedName("trophies")
     private List<Trophy> trophyList;
 
     //================================================================================
@@ -47,11 +51,19 @@ public class TrophyList extends AbstractThing implements Sortable {
     //================================================================================
 
     /**
-     * @return the instance of the {@link AbstractSortingHelper} to sort the list of trophies
+     * @return the instance of the {@link TrophyFilterHelper} to filter the list of trophies
+     */
+    @Override
+    public TrophyFilterHelper filtering() {
+        return filterHelper;
+    }
+
+    /**
+     * @return the instance of the {@link TrophyListSortHelper} to sort the list of trophies
      */
     @Override
     public TrophyListSortHelper sorting() {
-        return helper;
+        return sortHelper;
     }
 
     /**
@@ -81,29 +93,28 @@ public class TrophyList extends AbstractThing implements Sortable {
      * <p></p>
      * This is a {@link Thing} of type {@link ThingType#T6}, has empty name(not present in JSON).
      */
+    @Wrapped("data")
     public static class Trophy extends AbstractThing {
         //================================================================================
         // Properties
         //================================================================================
-        @JsonPathExpression("data.award_id")
+        @SerializedName("award_id")
         private String awardID;
 
-        @JsonPathExpression("data.description")
         private String description;
 
-        @JsonPathExpression("data.granted_at")
+        @SerializedName("granted_at")
         private Long grantedTime;
 
-        @JsonPathExpression("data.icon_40")
+        @SerializedName("icon_40")
         private String icon40;
 
-        @JsonPathExpression("data.icon_70")
+        @SerializedName("icon_70")
         private String icon70;
 
-        @JsonPathExpression("data.name")
+        @SerializedName("name")
         private String trophyName;
 
-        @JsonPathExpression("data.url")
         private String url;
 
         //================================================================================

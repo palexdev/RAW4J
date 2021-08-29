@@ -16,27 +16,29 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.data;
+package io.github.palexdev.raw4j.data.listing;
 
 import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.data.base.AbstractThing;
 import io.github.palexdev.raw4j.enums.ThingType;
+import io.github.palexdev.raw4j.utils.filtering.KarmaListFilterHelper;
+import io.github.palexdev.raw4j.utils.filtering.base.Filterable;
 import io.github.palexdev.raw4j.utils.sorting.KarmaListSortHelper;
-import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 import io.github.palexdev.raw4j.utils.sorting.base.Sortable;
 
 import java.util.List;
 
 /**
- * Thing of type {@link ThingType#KARMA_LIST}, implements {@link Sortable}, has empty name(not present in JSON).
+ * Thing of type {@link ThingType#KARMA_LIST}, implements {@link Filterable} and {@link Sortable}, has empty name(not present in JSON).
  * <p></p>
  * This class offers a breakdown of subreddit karma.
  */
-public class KarmaList extends AbstractThing implements Sortable {
+public class KarmaList extends AbstractThing implements Filterable, Sortable {
     //================================================================================
     // Properties
     //================================================================================
-    private transient final KarmaListSortHelper helper = new KarmaListSortHelper(this);
+    private transient final KarmaListFilterHelper filterHelper = KarmaListFilterHelper.filtering(this);
+    private transient final KarmaListSortHelper sortHelper = KarmaListSortHelper.sorting(this);
 
     @SerializedName("data")
     private List<KarmaListSubreddit> subredditList;
@@ -46,11 +48,19 @@ public class KarmaList extends AbstractThing implements Sortable {
     //================================================================================
 
     /**
-     * @return the instance of the {@link AbstractSortingHelper} to sort the list of subreddits
+     * @return the instance of the {@link KarmaListFilterHelper} to filter the list of subreddits
+     */
+    @Override
+    public KarmaListFilterHelper filtering() {
+        return filterHelper;
+    }
+
+    /**
+     * @return the instance of the {@link KarmaListSortHelper} to sort the list of subreddits
      */
     @Override
     public KarmaListSortHelper sorting() {
-        return helper;
+        return sortHelper;
     }
 
     /**
@@ -60,10 +70,10 @@ public class KarmaList extends AbstractThing implements Sortable {
     public List<KarmaListSubreddit> subreddits() {
         return subredditList;
     }
-
     //================================================================================
     // Getters
     //================================================================================
+
     @Override
     public String getName() {
         return "";
@@ -104,6 +114,10 @@ public class KarmaList extends AbstractThing implements Sortable {
 
         public int getLinkKarma() {
             return linkKarma;
+        }
+
+        public int getTotalKarma() {
+            return commentKarma + linkKarma;
         }
     }
 }

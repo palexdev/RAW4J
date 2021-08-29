@@ -22,11 +22,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import io.github.palexdev.raw4j.data.UserList;
-import io.github.palexdev.raw4j.json.GsonInstance;
+import io.github.palexdev.raw4j.data.listing.UserList;
 
 import java.lang.reflect.Type;
 
+import static io.github.palexdev.raw4j.json.GsonInstance.toJsonTree;
+
+@Deprecated(forRemoval = true)
 public class UserListSerializer implements JsonSerializer<UserList> {
 
     @Override
@@ -35,7 +37,7 @@ public class UserListSerializer implements JsonSerializer<UserList> {
         object.addProperty("kind", src.getType().toString());
         JsonObject data = new JsonObject();
         object.add("data", data);
-        data.add("children", GsonInstance.gson().toJsonTree(src.users()));
+        data.add("children", toJsonTree(src.users()));
         return object;
     }
 }

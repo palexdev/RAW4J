@@ -27,19 +27,21 @@ public class RedditApiWrapper {
     //================================================================================
     // Properties
     //================================================================================
+    private final OAuthFlow authManager;
     private final AccountApi accountApi;
     private final UserApi userApi;
 
     //================================================================================
     // Constructors
     //================================================================================
-    RedditApiWrapper(OAuthFlow authManager) {
-        accountApi = new AccountApi(authManager);
-        userApi = new UserApi(authManager);
+    RedditApiWrapper(RedditClient client) {
+        this.authManager = client.getAuthManager();
+        accountApi = new AccountApi(this);
+        userApi = new UserApi(this);
     }
 
     //================================================================================
-    // Getters
+    // APIs
     //================================================================================
 
     /**
@@ -54,5 +56,12 @@ public class RedditApiWrapper {
      */
     public UserApi userApi() {
         return userApi;
+    }
+
+    //================================================================================
+    // Getters
+    //================================================================================
+    OAuthFlow getAuthManager() {
+        return authManager;
     }
 }

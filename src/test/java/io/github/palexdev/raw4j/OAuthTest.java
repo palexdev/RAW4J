@@ -19,26 +19,22 @@
 package io.github.palexdev.raw4j;
 
 import io.github.palexdev.raw4j.api.RedditClient;
+import io.github.palexdev.raw4j.base.CommonTestProperties;
 import io.github.palexdev.raw4j.enums.LoginType;
 import io.github.palexdev.raw4j.enums.Scopes;
 import io.github.palexdev.raw4j.oauth.OAuthParameters;
-import io.github.palexdev.raw4j.utils.ClientUtils;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import java.net.URL;
 import java.util.List;
 
 import static io.github.palexdev.raw4j.TestConfig.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class OAuthTest {
-    private final int port = 8888;
-    private final String host = "127.0.0.1";
-    private final URL redirectURI = ClientUtils.url("http", host, port, "/");
+public class OAuthTest extends CommonTestProperties {
 
     @Test
     @Order(1)
@@ -136,7 +132,7 @@ public class OAuthTest {
         RedditClient client = RedditClient.login(parameters);
         assertNotNull(client);
         assertTrue(client.getAuthInfo().isValid());
-        System.out.println(client.getAuthInfo().getAccessToken());
+        logger.debug(client.getAuthInfo().getAccessToken());
     }
 
     @Test

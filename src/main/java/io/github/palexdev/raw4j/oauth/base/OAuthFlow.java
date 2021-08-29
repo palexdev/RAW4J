@@ -19,6 +19,7 @@
 package io.github.palexdev.raw4j.oauth.base;
 
 import com.google.gson.JsonObject;
+import io.github.palexdev.raw4j.api.UserApi;
 import io.github.palexdev.raw4j.exception.OAuthException;
 import io.github.palexdev.raw4j.oauth.OAuthData;
 import io.github.palexdev.raw4j.oauth.OAuthInfo;
@@ -38,7 +39,15 @@ public interface OAuthFlow {
     void authenticate() throws OAuthException;
 
     /**
-     * This is the implementation of tbe HTTP GET method using OkHttp
+     * This is the implementation of the HTTP DELETE method using OkHttp.
+     *
+     * @param url the resource URL
+     * @return the response as a {@link JsonObject}
+     */
+    JsonObject delete(String url);
+
+    /**
+     * This is the implementation of the HTTP GET method using OkHttp.
      *
      * @param url the resource URL
      * @return the response as a {@link JsonObject}
@@ -46,7 +55,17 @@ public interface OAuthFlow {
     JsonObject get(String url);
 
     /**
-     * This is the implementation of the HTTP PATCH method using OkHttp
+     * Executes an HTTP GET request and parses a boolean from the response.
+     * Needed for {@link UserApi#usernameAvailable(String)} as the response is not
+     * a valid JSON but just a boolean.
+     *
+     * @param url the resource URL
+     * @return the response as a boolean, if failed to parse returns null
+     */
+    Boolean getBoolean(String url);
+
+    /**
+     * This is the implementation of the HTTP PATCH method using OkHttp.
      *
      * @param url the resource URL
      * @param requestBody the request body
@@ -55,13 +74,22 @@ public interface OAuthFlow {
     JsonObject patch(String url, RequestBody requestBody);
 
     /**
-     * This is the implementation of the HTTP POST method using OkHttp
+     * This is the implementation of the HTTP POST method using OkHttp.
      *
      * @param url the resource URL
      * @param requestBody the request body
      * @return the response as a {@link JsonObject}
      */
     JsonObject post(String url, RequestBody requestBody);
+
+    /**
+     * This is the implementation of the HTTP PUT method using OkHttp.
+     *
+     * @param url the resource URL
+     * @param requestBody the request body
+     * @return the response as a {@link JsonObject}
+     */
+    JsonObject put(String url, RequestBody requestBody);
 
     /**
      * @return an instance of {@link OAuthInfo} relative to the current/used OAuthFlow

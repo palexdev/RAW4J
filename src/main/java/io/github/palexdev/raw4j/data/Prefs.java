@@ -19,7 +19,7 @@
 package io.github.palexdev.raw4j.data;
 
 import com.google.gson.annotations.SerializedName;
-import io.github.palexdev.raw4j.enums.ApiEnumerators.*;
+import io.github.palexdev.raw4j.enums.PrefsEnumerators.*;
 
 import java.util.Locale;
 

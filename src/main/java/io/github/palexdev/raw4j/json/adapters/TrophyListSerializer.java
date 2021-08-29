@@ -19,12 +19,13 @@
 package io.github.palexdev.raw4j.json.adapters;
 
 import com.google.gson.*;
-import io.github.palexdev.raw4j.data.TrophyList;
-import io.github.palexdev.raw4j.data.TrophyList.Trophy;
+import io.github.palexdev.raw4j.data.listing.TrophyList;
+import io.github.palexdev.raw4j.data.listing.TrophyList.Trophy;
 import io.github.palexdev.raw4j.enums.ThingType;
 
 import java.lang.reflect.Type;
 
+@Deprecated(forRemoval = true)
 public class TrophyListSerializer implements JsonSerializer<TrophyList> {
     private final TrophySerializer trophySerializer = new TrophySerializer();
 

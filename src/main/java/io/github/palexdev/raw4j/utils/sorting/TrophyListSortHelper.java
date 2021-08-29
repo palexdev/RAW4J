@@ -18,8 +18,8 @@
 
 package io.github.palexdev.raw4j.utils.sorting;
 
-import io.github.palexdev.raw4j.data.TrophyList;
-import io.github.palexdev.raw4j.data.TrophyList.Trophy;
+import io.github.palexdev.raw4j.data.listing.TrophyList;
+import io.github.palexdev.raw4j.data.listing.TrophyList.Trophy;
 import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 
 import java.util.Comparator;
@@ -41,54 +41,47 @@ public class TrophyListSortHelper extends AbstractSortingHelper<TrophyList, Trop
         this.trophyList = trophyList;
     }
 
+    public static TrophyListSortHelper sorting(TrophyList trophyList) {
+        return new TrophyListSortHelper(trophyList);
+    }
+
+    //================================================================================
+    // Comparators
+    //================================================================================
+
+    /**
+     * @return a comparator that sorts the trophies by their description
+     */
+    public static Comparator<Trophy> sortByDescription() {
+        return Comparator.comparing(Trophy::getDescription);
+    }
+
+    /**
+     * @return a comparator that sorts the trophies by their name
+     */
+    public static Comparator<Trophy> sortByName() {
+        return Comparator.comparing(Trophy::getTrophyName);
+    }
+
+    /**
+     * @return a comparator that sorts the trophies by the time they were granted
+     */
+    public static Comparator<Trophy> sortByTime() {
+        return Comparator.comparing(Trophy::getGrantedTime);
+    }
+
     //================================================================================
     // Methods
     //================================================================================
 
     /**
-     * Sets the comparator to one that sorts by {@link Trophy#getDescription()}
-     * <p>
-     * To confirm the sort call {@link #sort()}
-     */
-    public TrophyListSortHelper sortByDescription() {
-        sortBy(Comparator.comparing(Trophy::getDescription));
-        return this;
-    }
-
-    /**
-     * Sets the comparator to one that sorts by {@link Trophy#getTrophyName()}
-     * <p>
-     * To confirm the sort call {@link #sort()}
-     */
-    public TrophyListSortHelper sortByName() {
-        sortBy(Comparator.comparing(Trophy::getTrophyName));
-        return this;
-    }
-
-    /**
-     * Sets the comparator to one that sorts by {@link Trophy#getGrantedTime()}
-     * <p>
-     * To confirm the sort call {@link #sort()}
-     */
-    public TrophyListSortHelper sortByTime() {
-        sortBy(Comparator.comparing(Trophy::getGrantedTime));
-        return this;
-    }
-
-    //================================================================================
-    // Override Methods
-    //================================================================================
-
-    /**
-     * Sorts the list with the built comparator.
+     * {@inheritDoc}
      */
     @Override
     public TrophyList sort() {
-        if (getList() == null) {
-            return trophyList;
+        if (getList() != null) {
+            getList().sort(comparator);
         }
-
-        getList().sort(comparator);
         return trophyList;
     }
 

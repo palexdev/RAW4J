@@ -23,9 +23,9 @@ import com.google.gson.annotations.SerializedName;
 /**
  * This class contains various enumerators needed for APIs
  */
-public class ApiEnumerators {
+public class PrefsEnumerators {
 
-    private ApiEnumerators() {}
+    private PrefsEnumerators() {}
 
     public enum AcceptPMsEnum {
         @SerializedName("everyone")

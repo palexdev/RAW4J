@@ -18,9 +18,9 @@
 
 package io.github.palexdev.raw4j.utils.sorting;
 
-import io.github.palexdev.raw4j.data.KarmaList;
-import io.github.palexdev.raw4j.data.UserList;
-import io.github.palexdev.raw4j.data.UserList.ListingUser;
+import io.github.palexdev.raw4j.data.listing.KarmaList;
+import io.github.palexdev.raw4j.data.listing.UserList;
+import io.github.palexdev.raw4j.data.listing.UserList.ListingUser;
 import io.github.palexdev.raw4j.utils.sorting.base.AbstractSortingHelper;
 
 import java.util.Comparator;
@@ -42,44 +42,40 @@ public class UserListSortHelper extends AbstractSortingHelper<UserList, ListingU
         this.userList = userList;
     }
 
+    public static UserListSortHelper sorting(UserList userList) {
+        return new UserListSortHelper(userList);
+    }
+
+    //================================================================================
+    // Comparators
+    //================================================================================
+
+    /**
+     * @return a comparator that sorts the users by their name
+     */
+    public static Comparator<ListingUser> sortByName() {
+        return Comparator.comparing(ListingUser::getName);
+    }
+
+    /**
+     * @return a comparator that sorts the user by their creation time
+     */
+    public static Comparator<ListingUser> sortByTime() {
+        return Comparator.comparing(ListingUser::getDate);
+    }
+
     //================================================================================
     // Methods
     //================================================================================
 
     /**
-     * Sets the comparator to one that sorts by {@link ListingUser#getName()}
-     * <p>
-     * To confirm the sort call {@link #sort()}
-     */
-    public UserListSortHelper sortByName() {
-        sortBy(Comparator.comparing(ListingUser::getName));
-        return this;
-    }
-
-    /**
-     * Sets the comparator to one that sorts by {@link ListingUser#getDate()}
-     * <p>
-     * To confirm the sort call {@link #sort()}
-     */
-    public UserListSortHelper sortByTime() {
-        sortBy(Comparator.comparing(ListingUser::getDate));
-        return this;
-    }
-
-    //================================================================================
-    // Override Methods
-    //================================================================================
-
-    /**
-     * Sorts the list with the built comparator.
+     * {@inheritDoc}
      */
     @Override
     public UserList sort() {
-        if (getList() == null) {
-            return userList;
+        if (getList() != null) {
+            getList().sort(comparator);
         }
-
-        getList().sort(comparator);
         return userList;
     }
 

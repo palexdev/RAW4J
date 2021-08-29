@@ -19,10 +19,10 @@
 package io.github.palexdev.raw4j.enums;
 
 import com.google.gson.annotations.SerializedName;
-import io.github.palexdev.raw4j.data.KarmaList;
-import io.github.palexdev.raw4j.data.TrophyList;
-import io.github.palexdev.raw4j.data.UserList;
 import io.github.palexdev.raw4j.data.base.Thing;
+import io.github.palexdev.raw4j.data.listing.KarmaList;
+import io.github.palexdev.raw4j.data.listing.TrophyList;
+import io.github.palexdev.raw4j.data.listing.UserList;
 
 import java.util.Arrays;
 
@@ -44,7 +44,7 @@ public enum ThingType {
     T2("t2"),
 
     /**
-     * According to Reddit API documentation this is for links.
+     * According to Reddit API documentation this is for links/posts.
      */
     @SerializedName("t3")
     T3("t3"),
@@ -66,6 +66,12 @@ public enum ThingType {
      */
     @SerializedName("t6")
     T6("t6"),
+
+    /**
+     * According to Reddit API documentation this is for generic listings
+     */
+    @SerializedName("Listing")
+    LISTING("Listing"),
 
     /**
      * Not documented but this is for {@link KarmaList}s
@@ -101,6 +107,13 @@ public enum ThingType {
                 .filter(t -> t.toString().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * Converts a {@link SubredditType} to a thing type.
+     */
+    public static ThingType from(SubmissionType submissionType) {
+        return submissionType == SubmissionType.COMMENT ? T1 : T3;
     }
 
     @Override

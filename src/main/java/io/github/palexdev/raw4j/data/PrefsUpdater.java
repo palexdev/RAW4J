@@ -19,15 +19,16 @@
 package io.github.palexdev.raw4j.data;
 
 import com.google.gson.JsonObject;
-import io.github.palexdev.raw4j.enums.ApiEndpoints;
-import io.github.palexdev.raw4j.enums.ApiEnumerators;
-import io.github.palexdev.raw4j.enums.ApiEnumerators.AcceptPMsEnum;
-import io.github.palexdev.raw4j.json.GsonInstance;
+import io.github.palexdev.raw4j.enums.PrefsEnumerators.*;
+import io.github.palexdev.raw4j.enums.endpoints.AccountEndpoints;
 import io.github.palexdev.raw4j.oauth.base.OAuthFlow;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 import java.util.Locale;
+
+import static io.github.palexdev.raw4j.json.GsonInstance.fromJson;
+import static io.github.palexdev.raw4j.json.GsonInstance.toJsonTree;
 
 /**
  * This class is a helper to update the logged user preferences. Helps to create a PATCH request.
@@ -62,7 +63,7 @@ public class PrefsUpdater {
     public Prefs patch() {
         String json = generateJson();
         RequestBody requestBody = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
-        return GsonInstance.gson().fromJson(authManager.patch(ApiEndpoints.ME_PREFS.toString(), requestBody), Prefs.class);
+        return fromJson(authManager.patch(AccountEndpoints.ME_PREFS.getFullEndpoint(), requestBody), Prefs.class);
     }
 
     /**
@@ -72,7 +73,7 @@ public class PrefsUpdater {
      * @throws IllegalStateException if no preferences were set, in other words if the generated JSON is empty
      */
     private String generateJson() {
-        JsonObject json = (JsonObject) GsonInstance.gson().toJsonTree(prefs);
+        JsonObject json = (JsonObject) toJsonTree(prefs);
         if (json.size() == 0) {
             throw new IllegalStateException("Cannot update preferences since no prefs have been changed!");
         }
@@ -142,7 +143,7 @@ public class PrefsUpdater {
     /**
      * {@link Prefs#getCountryCode()}
      */
-    public PrefsUpdater setCountryCode(ApiEnumerators.CountryCode countryCode) {
+    public PrefsUpdater setCountryCode(CountryCode countryCode) {
         prefs.setCountryCode(countryCode);
         return this;
     }
@@ -158,7 +159,7 @@ public class PrefsUpdater {
     /**
      * {@link Prefs#getDefaultCommentSort()}
      */
-    public PrefsUpdater setDefaultCommentSort(ApiEnumerators.CommentSort defaultCommentSort) {
+    public PrefsUpdater setDefaultCommentSort(CommentSort defaultCommentSort) {
         prefs.setDefaultCommentSort(defaultCommentSort);
         return this;
     }
@@ -286,7 +287,7 @@ public class PrefsUpdater {
     /**
      * {@link Prefs#getGeoPopular()}
      */
-    public PrefsUpdater setGeoPopular(ApiEnumerators.GeoPopular geoPopular) {
+    public PrefsUpdater setGeoPopular(GeoPopular geoPopular) {
         prefs.setGeoPopular(geoPopular);
         return this;
     }
@@ -398,7 +399,7 @@ public class PrefsUpdater {
     /**
      * {@link Prefs#getMedia()}
      */
-    public PrefsUpdater setMedia(ApiEnumerators.Media media) {
+    public PrefsUpdater setMedia(Media media) {
         prefs.setMedia(media);
         return this;
     }
@@ -406,7 +407,7 @@ public class PrefsUpdater {
     /**
      * {@link Prefs#getMediaPreview()}
      */
-    public PrefsUpdater setMediaPreview(ApiEnumerators.Media mediaPreview) {
+    public PrefsUpdater setMediaPreview(Media mediaPreview) {
         prefs.setMediaPreview(mediaPreview);
         return this;
     }

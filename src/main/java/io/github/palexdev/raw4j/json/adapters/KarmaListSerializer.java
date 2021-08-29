@@ -22,11 +22,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import io.github.palexdev.raw4j.data.KarmaList;
+import io.github.palexdev.raw4j.data.listing.KarmaList;
 import io.github.palexdev.raw4j.enums.ThingType;
 
 import java.lang.reflect.Type;
 
+@Deprecated(forRemoval = true)
 public class KarmaListSerializer implements JsonSerializer<KarmaList> {
 
     @Override

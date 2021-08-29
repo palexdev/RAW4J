@@ -20,7 +20,8 @@ package io.github.palexdev.raw4j.data.base;
 
 import com.google.gson.annotations.SerializedName;
 import io.github.palexdev.raw4j.enums.ThingType;
-import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
+import io.github.palexdev.raw4j.json.annotations.IgnoreWrap;
+import io.github.palexdev.raw4j.json.annotations.Wrapped;
 
 /**
  * This is the base class for every {@code Listing}.
@@ -32,18 +33,16 @@ import io.github.palexdev.raw4j.json.annotations.JsonPathExpression;
  * <p></p>
  * Implements {@link Listing}
  */
+@Wrapped("data")
 public abstract class AbstractListing implements Listing {
     //================================================================================
     // Properties
     //================================================================================
-    @JsonPathExpression("kind")
     @SerializedName("kind")
+    @IgnoreWrap
     private ThingType type;
 
-    @JsonPathExpression("data.after")
     private String after;
-
-    @JsonPathExpression("data.before")
     private String before;
 
     //================================================================================

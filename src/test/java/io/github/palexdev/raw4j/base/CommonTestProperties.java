@@ -21,10 +21,14 @@ package io.github.palexdev.raw4j.base;
 import io.github.palexdev.raw4j.api.RedditClient;
 import io.github.palexdev.raw4j.oauth.OAuthParameters;
 import io.github.palexdev.raw4j.utils.ClientUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 
 public class CommonTestProperties {
+    protected final Logger logger = LoggerFactory.getLogger("Test Logger");
+
     protected final String host = "127.0.0.1";
     protected final int port = 8888;
     protected final URL redirectURI = ClientUtils.url("http", host, port, "/");

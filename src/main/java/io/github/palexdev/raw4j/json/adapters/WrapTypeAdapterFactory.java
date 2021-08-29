@@ -16,16 +16,24 @@
  * along with RAW4J.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.github.palexdev.raw4j.json.annotations;
+package io.github.palexdev.raw4j.json.adapters;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.reflect.TypeToken;
+import io.github.palexdev.raw4j.json.annotations.Wrapped;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+/**
+ * Factory to create adapters of type {@link WrappedTypeAdapter}.
+ */
+public class WrapTypeAdapterFactory implements TypeAdapterFactory {
 
-@Retention(RUNTIME)
-@Target({FIELD})
-public @interface JsonPathExpression {
-    String value();
+    @Override
+    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        TypeAdapter<T> delegateAdapter = gson.getDelegateAdapter(this, type);
+        return type.getRawType().isAnnotationPresent(Wrapped.class) ?
+                new WrappedTypeAdapter<>(type, delegateAdapter) :
+                delegateAdapter;
+    }
 }
